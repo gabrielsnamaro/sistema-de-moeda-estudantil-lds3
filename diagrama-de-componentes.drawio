@@ -1,0 +1,242 @@
+<mxfile host="app.diagrams.net" modified="2026-10-26T18:00:00.000Z" agent="Mozilla/5.0" version="24.7.17">
+  <diagram id="componentes-sistema-moeda" name="Diagrama de Componentes - Sistema de Moeda Estudantil">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TÍTULO DO DIAGRAMA -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 20px;&quot;&gt;Diagrama de Componentes — Sistema de Moeda Estudantil (Arquitetura MVC)&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 13px; color: #4A5568;&quot;&gt;Sprint 01 — Lab03S01 | Java Spring Boot + React SPA + PostgreSQL + EmailJS&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- SUBSISTEMA: FRONT-END VIEW (REACT SPA) -->
+        <mxCell id="subsys-frontend" value="&amp;lt;&amp;lt;subsystem&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;Camada View — React SPA&lt;/b&gt;" style="shape=folder;fontStyle=1;tabWidth=200;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=12;fillColor=#E1F5FE;strokeColor=#0288D1;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="90" width="420" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- FRONT-END COMPONENTS -->
+        <mxCell id="comp-auth-view" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;AuthView&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #37474F;&quot;&gt;(Login e Sessão UI)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0288D1;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="160" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-aluno-view" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;AlunoView&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #37474F;&quot;&gt;(Cadastro, Extrato e Catálogo UI)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0288D1;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="270" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-professor-view" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;ProfessorView&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #37474F;&quot;&gt;(Envio de Moedas e Extrato UI)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0288D1;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="380" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-empresa-view" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;EmpresaParceiraView&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #37474F;&quot;&gt;(Cadastro e Gestão de Vantagens UI)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0288D1;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="490" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-emailjs-client" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;EmailJSClient&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #37474F;&quot;&gt;(Disparo HTTP de Notificações e Cupons)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#FBC02D;strokeWidth=1.5;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="700" width="340" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SUBSISTEMA: BACK-END (SPRING BOOT MVC) -->
+        <mxCell id="subsys-backend" value="&amp;lt;&amp;lt;subsystem&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;Aplicação Back-end — Java Spring Boot MVC&lt;/b&gt;" style="shape=folder;fontStyle=1;tabWidth=320;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=12;fillColor=#F8F9FA;strokeColor=#455A64;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="90" width="880" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- CAMADA CONTROLLER -->
+        <mxCell id="layer-controller" value="&amp;lt;&amp;lt;layer&amp;gt;&amp;gt; Controller — Spring Web REST" style="swimlane;startSize=26;fillColor=#FFF3E0;strokeColor=#F57C00;strokeWidth=1.5;fontStyle=1;rounded=1;arcSize=4;align=left;spacingLeft=10;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="140" width="820" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-auth-controller" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;AuthController&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;(/api/auth)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57C00;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-controller">
+          <mxGeometry x="20" y="50" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-aluno-controller" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;AlunoController&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;(/api/alunos)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57C00;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-controller">
+          <mxGeometry x="220" y="50" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-professor-controller" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;ProfessorMoedaController&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;(/api/moedas)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57C00;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-controller">
+          <mxGeometry x="420" y="50" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-empresa-controller" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;EmpresaVantagemController&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;(/api/vantagens)&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57C00;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-controller">
+          <mxGeometry x="630" y="50" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- CAMADA MODEL & SERVICE -->
+        <mxCell id="layer-service" value="&amp;lt;&amp;lt;layer&amp;gt;&amp;gt; Model &amp;amp; Service — Regras de Negócio e Domínio" style="swimlane;startSize=26;fillColor=#E8F5E9;strokeColor=#388E3C;strokeWidth=1.5;fontStyle=1;rounded=1;arcSize=4;align=left;spacingLeft=10;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="370" width="820" height="310" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-auth-service" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;AutenticacaoService&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #37474F;&quot;&gt;Autenticação e Sessão&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#388E3C;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-service">
+          <mxGeometry x="20" y="45" width="180" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-conta-service" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;ContaMoedaService&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #37474F;&quot;&gt;Saldo, Extrato, Crédito Semestral (1000) e Envio com Notificação&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#388E3C;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-service">
+          <mxGeometry x="230" y="45" width="270" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-vantagem-service" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;VantagemResgateService&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #37474F;&quot;&gt;Cadastro de Vantagens, Débito e Geração de Código de Cupom&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#388E3C;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-service">
+          <mxGeometry x="530" y="45" width="270" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-domain-model" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;DomainModel&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #37474F;&quot;&gt;Entidades: Usuario, Aluno, Professor, EmpresaParceira, InstituicaoEnsino, Vantagem, Transacao, CupomResgate&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#388E3C;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-service">
+          <mxGeometry x="20" y="170" width="780" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- CAMADA DE PERSISTÊNCIA -->
+        <mxCell id="layer-repo" value="&amp;lt;&amp;lt;layer&amp;gt;&amp;gt; Data Access — Spring Data JPA / Hibernate ORM" style="swimlane;startSize=26;fillColor=#EDE7F6;strokeColor=#512DA8;strokeWidth=1.5;fontStyle=1;rounded=1;arcSize=4;align=left;spacingLeft=10;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="730" width="820" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-usuario-repo" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;UsuarioRepository&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;Aluno / Professor / Empresa / Instituição&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#512DA8;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-repo">
+          <mxGeometry x="30" y="45" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-transacao-repo" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;TransacaoRepository&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;Histórico de Moedas &amp;amp; Extrato&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#512DA8;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-repo">
+          <mxGeometry x="300" y="45" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="comp-vantagem-repo" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;VantagemCupomRepository&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 10px; color: #555;&quot;&gt;Vantagens &amp;amp; Cupons de Resgate&lt;/font&gt;" style="shape=module;align=center;verticalAlign=middle;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#512DA8;strokeWidth=1.5;fontFamily=Helvetica;fontSize=11;" vertex="1" parent="layer-repo">
+          <mxGeometry x="570" y="45" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- COMPONENTES EXTERNOS / INFRAESTRUTURA -->
+        <mxCell id="infra-postgres" value="&amp;lt;&amp;lt;database&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;PostgreSQL Database&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #2E7D32;&quot;&gt;Port 5432 (Docker / Local)&lt;br/&gt;Tabelas Relacionais Lab03S02&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="1050" width="280" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="infra-emailjs" value="&amp;lt;&amp;lt;external service&amp;gt;&amp;gt;&lt;br/&gt;&lt;b&gt;EmailJS REST API&lt;/b&gt;&lt;br/&gt;&lt;font style=&quot;font-size: 11px; color: #D84315;&quot;&gt;api.emailjs.com/api/v1.0/email/send&lt;br/&gt;Notificação de Moedas e Cupons&lt;/font&gt;" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFA000;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1050" width="340" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: VIEW -> CONTROLLER -->
+        <mxCell id="edge-view-auth" value="REST API&lt;br/&gt;(HTTP/JSON)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#0288D1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-auth-view" target="comp-auth-controller">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-view-aluno" value="REST API&lt;br/&gt;(HTTP/JSON)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#0288D1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-aluno-view" target="comp-aluno-controller">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-view-prof" value="REST API&lt;br/&gt;(HTTP/JSON)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#0288D1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-professor-view" target="comp-professor-controller">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="420" />
+              <mxPoint x="480" y="170" />
+              <mxPoint x="1080" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-view-empresa" value="REST API&lt;br/&gt;(HTTP/JSON)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#0288D1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-empresa-view" target="comp-empresa-controller">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="530" />
+              <mxPoint x="490" y="160" />
+              <mxPoint x="1285" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: CONTROLLER -> SERVICE -->
+        <mxCell id="edge-ctrl-svc-auth" value="Service Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#F57C00;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-auth-controller" target="comp-auth-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-ctrl-svc-aluno-conta" value="Service Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.3;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#F57C00;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-aluno-controller" target="comp-conta-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-ctrl-svc-aluno-vant" value="Service Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.2;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#F57C00;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-aluno-controller" target="comp-vantagem-service">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="875" y="340" />
+              <mxPoint x="1154" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-ctrl-svc-prof-conta" value="Service Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.7;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#F57C00;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-professor-controller" target="comp-conta-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-ctrl-svc-emp-vant" value="Service Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.7;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#F57C00;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-empresa-controller" target="comp-vantagem-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: SERVICES -> DOMAIN MODEL -->
+        <mxCell id="edge-svc-domain-1" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.15;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.2;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="layer-service" source="comp-auth-service" target="comp-domain-model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-svc-domain-2" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.2;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="layer-service" source="comp-conta-service" target="comp-domain-model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge-svc-domain-3" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.85;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.2;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="layer-service" source="comp-vantagem-service" target="comp-domain-model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: SERVICES -> REPOSITORIES -->
+        <mxCell id="edge-svc-repo-auth" value="JPA Repository Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.3;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-auth-service" target="comp-usuario-repo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="700" />
+              <mxPoint x="666" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-svc-repo-conta-tx" value="JPA Repository Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-conta-service" target="comp-transacao-repo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="700" />
+              <mxPoint x="980" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-svc-repo-conta-user" value="JPA Repository Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.7;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-conta-service" target="comp-usuario-repo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="710" />
+              <mxPoint x="754" y="710" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge-svc-repo-vant" value="JPA Repository Interface" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.5;strokeColor=#388E3C;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-vantagem-service" target="comp-vantagem-repo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1235" y="700" />
+              <mxPoint x="1250" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: REPOSITORIES -> POSTGRESQL -->
+        <mxCell id="edge-repo-postgres" value="JDBC Connection (TCP 5432)&lt;br/&gt;Spring Data JPA / Hibernate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=0;endArrow=classic;endSize=8;strokeWidth=2;strokeColor=#512DA8;fontFamily=Helvetica;fontSize=11;fontStyle=1;" edge="1" parent="1" source="layer-repo" target="infra-postgres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: EMAILJS CLIENT -> EMAILJS API -->
+        <mxCell id="edge-emailjs-api" value="HTTPS REST API&lt;br/&gt;(POST /v1.0/email/send)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.8;strokeColor=#FBC02D;fontFamily=Helvetica;fontSize=11;" edge="1" parent="1" source="comp-emailjs-client" target="infra-emailjs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INTERFACES / CONECTORES: ALUNO/PROFESSOR VIEWS -> EMAILJS CLIENT -->
+        <mxCell id="edge-views-emailjs" value="Disparo de Notificações / Cupons" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endSize=8;strokeWidth=1.2;strokeColor=#0288D1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1" source="comp-professor-view" target="comp-emailjs-client">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="480" />
+              <mxPoint x="230" y="680" />
+              <mxPoint x="260" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+
