@@ -1,2 +1,25 @@
-./context/
-./context
+# Contexto local e enunciados
+/context/
+context/
+
+# Java / Maven / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+
+# Node / React (Vite)
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# IDEs e Sistema Operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
