@@ -229,3 +229,164 @@ Esta seção consolida os três diagramas UML que compõem o modelo da Sprint 01
 | **`VantagemCupomRepository`** | Data Access | Spring Data JPA / Hibernate | Repositório de persistência para as vantagens ofertadas e cupons de resgate emitidos. |
 | **`PostgreSQL Database`** | Persistência Relacional | PostgreSQL (Porta 5432) | SGBD relacional responsável pela persistência transacional dos dados da aplicação. |
 | **`EmailJS REST API`** | Integração Externa | EmailJS HTTP REST API | Serviço externo em nuvem para envio imediato dos e-mails de reconhecimento e cupons com código único. |
+
+---
+
+## 5. Entregáveis da Sprint 02 (`Lab03S02`)
+
+Esta seção consolida os artefatos de persistência e implementação entregues na **Sprint 02 (`Lab03S02`)**: o Modelo Entidade-Relacionamento (MER) e seu respectivo Esquema Relacional, a definição e implementação da camada de acesso a dados via ORM (**Spring Data JPA / Hibernate** sobre **PostgreSQL**) e a versão funcional dos CRUDs iniciais de **Aluno** e **Empresa Parceira** integrando Front-end (**React + Vite**) e Back-end (**Spring Boot REST API**).
+
+---
+
+### 5.1 Modelo Entidade-Relacionamento (MER) e Esquema Relacional
+
+- **Arquivo editável Draw.io:** [modelo-er.drawio](modelo-er.drawio)
+- **Representação visual:**
+
+![Modelo Entidade-Relacionamento](img/modelo-er.png)
+
+#### Esquema Relacional (Notação da Disciplina — Unidade 3)
+
+Seguindo as regras de mapeamento Objeto-Relacional da Unidade 3 da disciplina (**1ª Alternativa de Mapeamento de Herança** — uma tabela por classe da hierarquia conectada por chave compartilhada `PK/FK`), o esquema relacional é composto pelas **8 relações** abaixo (chaves primárias destacadas com `[PK]` / **<u>sublinhado</u>** e chaves estrangeiras com `[FK]`):
+
+- **instituicoes_ensino**(**<u>id</u>**, nome, cnpj, endereco)
+- **usuarios**(**<u>id</u>**, nome, email, login, senha, tipo_perfil)
+- **alunos**(**<u>usuario_id</u>**, cpf, rg, endereco, curso, saldo_moedas, *instituicao_id*)
+  - `usuario_id` referencia `usuarios(id)` *(Herança JOINED 1:1)*
+  - `instituicao_id` referencia `instituicoes_ensino(id)` *(Agregação N:1 obrigatória — RN01)*
+- **professores**(**<u>usuario_id</u>**, cpf, departamento, saldo_moedas, *instituicao_id*)
+  - `usuario_id` referencia `usuarios(id)` *(Herança JOINED 1:1)*
+  - `instituicao_id` referencia `instituicoes_ensino(id)` *(Agregação N:1 obrigatória — RN01)*
+- **empresas_parceiras**(**<u>usuario_id</u>**, cnpj, descricao)
+  - `usuario_id` referencia `usuarios(id)` *(Herança JOINED 1:1)*
+- **vantagens**(**<u>id</u>**, titulo, descricao, foto_produto, custo_moedas, ativa, *empresa_id*)
+  - `empresa_id` referencia `empresas_parceiras(usuario_id)` *(Composição N:1 obrigatória)*
+- **transacoes**(**<u>id</u>**, data_hora, valor_moedas, motivo, tipo, *professor_id*, *aluno_id*, *vantagem_id*)
+  - `professor_id` referencia `professores(usuario_id)` *(Opcional: preenchido em créditos semestrais e envios de moedas)*
+  - `aluno_id` referencia `alunos(usuario_id)` *(Opcional: preenchido em envios de moedas e resgates)*
+  - `vantagem_id` referencia `vantagens(id)` *(Opcional: preenchido em resgates de vantagens)*
+- **cupons_resgate**(**<u>id</u>**, codigo_gerado, data_geracao, utilizado, *aluno_id*, *vantagem_id*, *transacao_id*)
+  - `aluno_id` referencia `alunos(usuario_id)` *(Associação N:1 obrigatória)*
+  - `vantagem_id` referencia `vantagens(id)` *(Associação N:1 obrigatória)*
+  - `transacao_id` referencia `transacoes(id)` *(Associação 1:1 UNIQUE obrigatória com o débito no extrato)*
+
+```text
+instituicoes_ensino (id [PK], nome, cnpj [UNIQUE], endereco)
+
+usuarios (id [PK], nome, email [UNIQUE], login [UNIQUE], senha, tipo_perfil)
+
+alunos (usuario_id [PK, FK -> usuarios.id], cpf [UNIQUE], rg, endereco, curso, saldo_moedas, instituicao_id [FK -> instituicoes_ensino.id])
+
+professores (usuario_id [PK, FK -> usuarios.id], cpf [UNIQUE], departamento, saldo_moedas, instituicao_id [FK -> instituicoes_ensino.id])
+
+empresas_parceiras (usuario_id [PK, FK -> usuarios.id], cnpj [UNIQUE], descricao)
+
+vantagens (id [PK], titulo, descricao, foto_produto, custo_moedas, ativa, empresa_id [FK -> empresas_parceiras.usuario_id])
+
+transacoes (id [PK], data_hora, valor_moedas, motivo, tipo, professor_id [FK -> professores.usuario_id], aluno_id [FK -> alunos.usuario_id], vantagem_id [FK -> vantagens.id])
+
+cupons_resgate (id [PK], codigo_gerado [UNIQUE], data_geracao, utilizado, aluno_id [FK -> alunos.usuario_id], vantagem_id [FK -> vantagens.id], transacao_id [FK UNIQUE -> transacoes.id])
+```
+
+#### Matriz de Rastreabilidade Objeto-Relacional (Classes UML $\rightarrow$ Tabelas PostgreSQL $\rightarrow$ JPA)
+
+| Classe de Domínio (UML) | Tabela Relacional (PostgreSQL) | Chave Primária (PK) | Chaves Estrangeiras (FK) | Estratégia e Anotações de Mapeamento JPA |
+| :--- | :--- | :--- | :--- | :--- |
+| **`InstituicaoEnsino`** | `instituicoes_ensino` | `id` (`BIGSERIAL`) | — | `@Entity`, `@Table(name = "instituicoes_ensino")`, `@Id @GeneratedValue(IDENTITY)` |
+| **`Usuario`** *(Abstrata)* | `usuarios` | `id` (`BIGSERIAL`) | — | `@Entity`, `@Inheritance(strategy = InheritanceType.JOINED)`, `@Enumerated(EnumType.STRING)` em `tipo_perfil` |
+| **`Aluno`** | `alunos` | `usuario_id` (`BIGINT`) | `usuario_id` $\rightarrow$ `usuarios(id)`<br>`instituicao_id` $\rightarrow$ `instituicoes_ensino(id)` | `@PrimaryKeyJoinColumn(name = "usuario_id")`, `@ManyToOne(optional = false)` para `InstituicaoEnsino` |
+| **`Professor`** | `professores` | `usuario_id` (`BIGINT`) | `usuario_id` $\rightarrow$ `usuarios(id)`<br>`instituicao_id` $\rightarrow$ `instituicoes_ensino(id)` | `@PrimaryKeyJoinColumn(name = "usuario_id")`, `@ManyToOne(optional = false)` para `InstituicaoEnsino` |
+| **`EmpresaParceira`** | `empresas_parceiras` | `usuario_id` (`BIGINT`) | `usuario_id` $\rightarrow$ `usuarios(id)` | `@PrimaryKeyJoinColumn(name = "usuario_id")`, `@Column(unique = true)` em `cnpj` |
+| **`Vantagem`** | `vantagens` | `id` (`BIGSERIAL`) | `empresa_id` $\rightarrow$ `empresas_parceiras(usuario_id)` | `@Entity`, `@ManyToOne(optional = false)` com `@JoinColumn(name = "empresa_id")` |
+| **`Transacao`** | `transacoes` | `id` (`BIGSERIAL`) | `professor_id` $\rightarrow$ `professores(usuario_id)`<br>`aluno_id` $\rightarrow$ `alunos(usuario_id)`<br>`vantagem_id` $\rightarrow$ `vantagens(id)` | `@Entity`, `@Enumerated(EnumType.STRING)` em `tipo`, `@ManyToOne` para `Professor`, `Aluno` e `Vantagem` |
+| **`CupomResgate`** | `cupons_resgate` | `id` (`BIGSERIAL`) | `aluno_id` $\rightarrow$ `alunos(usuario_id)`<br>`vantagem_id` $\rightarrow$ `vantagens(id)`<br>`transacao_id` $\rightarrow$ `transacoes(id)` | `@Entity`, `@ManyToOne(optional = false)` para `Aluno` e `Vantagem`, `@OneToOne(optional = false)` com `unique = true` para `Transacao` |
+
+---
+
+### 5.2 Estratégia de Acesso ao Banco de Dados (ORM — Spring Data JPA / Hibernate)
+
+A camada de persistência foi implementada no módulo `backend/` utilizando **Spring Boot 3.3**, **Spring Data JPA**, **Hibernate ORM** e **PostgreSQL 16**:
+
+1. **Mapeamento de Herança com `InheritanceType.JOINED` (1ª Alternativa da Unidade 3):**
+   - A superclasse abstrata `Usuario` é anotada com `@Inheritance(strategy = InheritanceType.JOINED)`, gerando a tabela base `usuarios` que concentra as credenciais e atributos comuns (`id`, `nome`, `email`, `login`, `senha`, `tipo_perfil`).
+   - As subclasses concretas `Aluno`, `Professor` e `EmpresaParceira` utilizam `@PrimaryKeyJoinColumn(name = "usuario_id")`, estabelecendo um relacionamento `1:1` no banco de dados.
+   - **Vantagem técnica:** Diferentemente da estratégia `SINGLE_TABLE`, o modelo `JOINED` evita dezenas de colunas `NULL` na tabela principal e permite impor restrições de integridade relacional rigorosas (`NOT NULL` e `UNIQUE`) diretamente no SGBD para atributos específicos de cada papel, tais como `alunos(cpf, rg, curso, instituicao_id)`, `professores(cpf, departamento, instituicao_id)` e `empresas_parceiras(cnpj)`.
+
+2. **Repositórios Spring Data JPA (`JpaRepository`):**
+   Foram implementadas as 8 interfaces de repositório no pacote `br.edu.pucminas.moedaestudantil.repository`, provendo operações transacionais completas e consultas derivadas para validação de unicidade:
+   - `InstituicaoEnsinoRepository` (`findByCnpj`, `existsByCnpj`)
+   - `UsuarioRepository` (`findByLogin`, `findByEmail`, `existsByLogin`, `existsByEmail`, `existsByLoginAndIdNot`, `existsByEmailAndIdNot`)
+   - `AlunoRepository` (`findByCpf`, `existsByCpf`, `existsByCpfAndIdNot`)
+   - `ProfessorRepository` (`findByCpf`, `existsByCpf`)
+   - `EmpresaParceiraRepository` (`findByCnpj`, `existsByCnpj`, `existsByCnpjAndIdNot`)
+   - `VantagemRepository` (`findByEmpresaParceiraId`, `findByAtivaTrue`)
+   - `TransacaoRepository` (`findByProfessorIdOrderByDataHoraDesc`, `findByAlunoIdOrderByDataHoraDesc`)
+   - `CupomResgateRepository` (`findByCodigoGerado`, `findByAlunoIdOrderByDataGeracaoDesc`)
+
+3. **Carga Inicial Automática (`DataSeeder` — Regra de Negócio `RN01`):**
+   Conforme o enunciado (*"As instituições participantes e os professores já estão pré-cadastrados no sistema"*), o componente `DataSeeder` (`CommandLineRunner`) executa de maneira idempotente na subida da aplicação e popula automaticamente:
+   - **3 Instituições de Ensino:** PUC Minas (`17.178.195/0001-67`), UFMG (`17.217.985/0001-04`) e CEFET-MG (`17.220.203/0001-96`).
+   - **2 Professores pré-cadastrados:** Profa. Milena Menezes Adão (`milena.adao@pucminas.br`, saldo inicial `1000` moedas) e Prof. Carlos Eduardo Almeida (`carlos.almeida@pucminas.br`, saldo inicial `1000` moedas), vinculados à PUC Minas.
+
+---
+
+### 5.3 CRUDs Iniciais de Aluno e Empresa Parceira (Front-end + Back-end)
+
+#### Endpoints REST Disponíveis (`http://localhost:8080`)
+
+| Método HTTP | Rota REST | Controller | Status de Sucesso | Descrição da Operação |
+| :--- | :--- | :--- | :---: | :--- |
+| `GET` | `/api/instituicoes` | `InstituicaoEnsinoController` | `200 OK` | Lista todas as instituições de ensino pré-cadastradas pelo `DataSeeder` para preenchimento do seletor no cadastro de aluno (`RN01`). |
+| `GET` | `/api/alunos` | `AlunoController` | `200 OK` | Lista todos os alunos cadastrados com seus dados acadêmicos, instituição vinculada e `saldoMoedas`. |
+| `GET` | `/api/alunos/{id}` | `AlunoController` | `200 OK` | Busca os detalhes de um aluno específico pelo `id`. Retorna `404 Not Found` caso não exista. |
+| `POST` | `/api/alunos` | `AlunoController` | `201 Created` | Cadastra um novo aluno validando campos obrigatórios (`@Valid`), instituição existente e unicidade de `cpf`, `email` e `login` (`409 Conflict` em duplicidades). |
+| `PUT` | `/api/alunos/{id}` | `AlunoController` | `200 OK` | Atualiza os dados cadastrais, curso e instituição de ensino de um aluno existente. |
+| `DELETE` | `/api/alunos/{id}` | `AlunoController` | `204 No Content` | Remove o registro do aluno (em cascata nas tabelas `alunos` e `usuarios`). |
+| `GET` | `/api/empresas` | `EmpresaParceiraController` | `200 OK` | Lista todas as empresas parceiras cadastradas na plataforma. |
+| `GET` | `/api/empresas/{id}` | `EmpresaParceiraController` | `200 OK` | Busca os dados de uma empresa parceira específica pelo `id`. |
+| `POST` | `/api/empresas` | `EmpresaParceiraController` | `201 Created` | Cadastra uma nova empresa parceira validando campos obrigatórios e unicidade de `cnpj`, `email` e `login`. |
+| `PUT` | `/api/empresas/{id}` | `EmpresaParceiraController` | `200 OK` | Atualiza razão social/nome fantasia, CNPJ, descrição, e-mail, login e senha da empresa parceira. |
+| `DELETE` | `/api/empresas/{id}` | `EmpresaParceiraController` | `204 No Content` | Remove o registro da empresa parceira do banco de dados. |
+
+#### Telas Implementadas no Front-end (`React + Vite`)
+
+- **`AlunoView` (`frontend/src/views/AlunoView.jsx`):**
+  - Formulário completo para criação e edição de alunos contendo Nome Completo, E-mail, Login, Senha, CPF, RG, Endereço Residencial, Curso e `<select>` obrigatório de **Instituição de Ensino** alimentado dinamicamente por `GET /api/instituicoes`.
+  - Tabela responsiva listando todos os alunos com nome, CPF/RG, curso, instituição vinculada, badge com o saldo atual de moedas (`0 moedas` no cadastro inicial) e botões de ação para **Editar** (preenchimento automático do formulário) e **Excluir**.
+- **`EmpresaParceiraView` (`frontend/src/views/EmpresaParceiraView.jsx`):**
+  - Formulário corporativo para criação e edição de empresas parceiras com Nome / Razão Social, CNPJ, E-mail Institucional, Login, Senha e Descrição dos benefícios/parceria.
+  - Tabela de gerenciamento exibindo as empresas cadastradas com CNPJ, credenciais de contato, descrição e ações de **Editar** e **Excluir**, além de tratamento amigável das mensagens de validação retornadas pelo `GlobalExceptionHandler` da API.
+
+---
+
+### 5.4 Como Executar o Projeto (Sprint 02)
+
+#### Pré-requisitos
+- **Docker** e **Docker Compose** instalados (para subir o banco de dados PostgreSQL e, opcionalmente, o Back-end em contêiner sem exigir JDK/Maven instalados localmente).
+- **Node.js 18+** e **npm** (para executar o servidor de desenvolvimento do Front-end React + Vite).
+
+#### Passo 1 — Subir o Banco de Dados PostgreSQL e o Back-end Spring Boot
+
+Na raiz do repositório, suba o banco de dados PostgreSQL e a API Spring Boot com o Docker Compose:
+
+```bash
+docker compose up -d postgres backend
+```
+
+> Caso possua **Java 21** e **Maven** instalados localmente na máquina e prefira rodar o Back-end fora do contêiner, basta subir apenas o banco (`docker compose up -d postgres`) e executar `cd backend && mvn spring-boot:run`.
+
+- O PostgreSQL ficará disponível na porta `5432` (banco `moeda_estudantil`).
+- O Back-end Spring Boot inicializará na porta `8080` (`http://localhost:8080`), criando automaticamente as 8 tabelas via Hibernate DDL e executando o `DataSeeder` com as instituições e professores iniciais.
+
+#### Passo 2 — Executar o Front-end React + Vite
+
+Em um novo terminal, acesse a pasta `frontend/`, instale as dependências e inicie o servidor de desenvolvimento:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+- Acesse a interface web no navegador em: **`http://localhost:5173`**
+
