@@ -362,31 +362,45 @@ A camada de persistência foi implementada no módulo `backend/` utilizando **Sp
 ### 5.4 Como Executar o Projeto (Sprint 02)
 
 #### Pré-requisitos
-- **Docker** e **Docker Compose** instalados (para subir o banco de dados PostgreSQL e, opcionalmente, o Back-end em contêiner sem exigir JDK/Maven instalados localmente).
-- **Node.js 18+** e **npm** (para executar o servidor de desenvolvimento do Front-end React + Vite).
+- **Docker** e **Docker Compose** instalados (não é necessário ter Java, Maven, PostgreSQL ou Node.js instalados no sistema operacional).
 
-#### Passo 1 — Subir o Banco de Dados PostgreSQL e o Back-end Spring Boot
+#### Modo 1 — Execução Unificada 100% Conteinerizada (Recomendado)
 
-Na raiz do repositório, suba o banco de dados PostgreSQL e a API Spring Boot com o Docker Compose:
-
-```bash
-docker compose up -d postgres backend
-```
-
-> Caso possua **Java 21** e **Maven** instalados localmente na máquina e prefira rodar o Back-end fora do contêiner, basta subir apenas o banco (`docker compose up -d postgres`) e executar `cd backend && mvn spring-boot:run`.
-
-- O PostgreSQL ficará disponível na porta `5432` (banco `moeda_estudantil`).
-- O Back-end Spring Boot inicializará na porta `8080` (`http://localhost:8080`), criando automaticamente as 8 tabelas via Hibernate DDL e executando o `DataSeeder` com as instituições e professores iniciais.
-
-#### Passo 2 — Executar o Front-end React + Vite
-
-Em um novo terminal, acesse a pasta `frontend/`, instale as dependências e inicie o servidor de desenvolvimento:
+Na raiz do repositório, execute um único comando para inicializar todo o ecossistema (PostgreSQL 16, API Spring Boot e Front-end React + Vite):
 
 ```bash
-cd frontend
-npm install
-npm run dev
+docker compose up
 ```
 
-- Acesse a interface web no navegador em: **`http://localhost:5173`**
+- **PostgreSQL 16:** Inicializa na porta `5432` com volume de dados persistente (`postgres_data`).
+- **Back-end Spring Boot (Java 21):** Aguarda o banco ficar saudável (`healthy`), sobe na porta `8080` (`http://localhost:8080`), gera automaticamente as 8 tabelas relacionais via Hibernate e popula o seed inicial de instituições e professores participantes (`RN01`).
+- **Front-end React + Vite (Node 20):** Aguarda a API, inicializa na porta `5173` e atende em **`http://localhost:5173`** no seu navegador com suporte a Hot Reloading.
+
+Para rodar em segundo plano (modo daemon):
+```bash
+docker compose up -d
+```
+
+E para parar todos os contêineres:
+```bash
+docker compose down
+```
+
+---
+
+#### Modo 2 — Execução Local no Host (Opcional / Híbrido)
+
+Caso deseje executar módulos individualmente no sistema host durante o desenvolvimento:
+1. Suba apenas o banco PostgreSQL:
+   ```bash
+   docker compose up -d postgres
+   ```
+2. Inicie a API Spring Boot (requer Java 21 e Maven no host):
+   ```bash
+   cd backend && mvn spring-boot:run
+   ```
+3. Inicie o Front-end React (requer Node.js 18+ e npm no host):
+   ```bash
+   cd frontend && npm install && npm run dev
+   ```
 
