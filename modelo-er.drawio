@@ -1,0 +1,331 @@
+<mxfile host="app.diagrams.net" modified="2026-10-28T17:10:00.000Z" agent="Mozilla/5.0" version="21.6.8" type="device">
+  <diagram id="modelo-er" name="Modelo ER - Sistema de Moeda Estudantil">
+    <mxGraphModel dx="1750" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1020" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. TABELA: instituicoes_ensino -->
+        <mxCell id="t_instituicoes_ensino" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;instituicoes_ensino" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="50" width="340" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="t_instituicoes_ensino_pk" value="[PK] id : BIGSERIAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_instituicoes_ensino">
+          <mxGeometry y="38" width="340" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_instituicoes_ensino_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#d79b00;" vertex="1" parent="t_instituicoes_ensino">
+          <mxGeometry y="62" width="340" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_instituicoes_ensino_cols" value="nome : VARCHAR(150) NOT NULL&#xa;cnpj : VARCHAR(18) NOT NULL UNIQUE&#xa;endereco : VARCHAR(255) NOT NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_instituicoes_ensino">
+          <mxGeometry y="70" width="340" height="64" as="geometry" />
+        </mxCell>
+
+        <!-- 2. TABELA: usuarios (superclasse base — herança JOINED) -->
+        <mxCell id="t_usuarios" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;usuarios" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="660" y="30" width="360" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="t_usuarios_pk" value="[PK] id : BIGSERIAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_usuarios">
+          <mxGeometry y="38" width="360" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_usuarios_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#9673a6;" vertex="1" parent="t_usuarios">
+          <mxGeometry y="62" width="360" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_usuarios_cols" value="nome : VARCHAR(150) NOT NULL&#xa;email : VARCHAR(150) NOT NULL UNIQUE&#xa;login : VARCHAR(80) NOT NULL UNIQUE&#xa;senha : VARCHAR(255) NOT NULL&#xa;tipo_perfil : VARCHAR(30) NOT NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_usuarios">
+          <mxGeometry y="70" width="360" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 3. TABELA: professores (subclasse JOINED 1:1 com usuarios) -->
+        <mxCell id="t_professores" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;professores" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="410" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="t_professores_pk" value="[PK, FK] usuario_id : BIGINT -&gt; usuarios(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_professores">
+          <mxGeometry y="38" width="410" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_professores_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#6c8ebf;" vertex="1" parent="t_professores">
+          <mxGeometry y="62" width="410" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_professores_cols" value="cpf : VARCHAR(14) NOT NULL UNIQUE&#xa;departamento : VARCHAR(120) NOT NULL&#xa;saldo_moedas : INTEGER NOT NULL DEFAULT 1000&#xa;[FK] instituicao_id : BIGINT NOT NULL -&gt; instituicoes_ensino(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_professores">
+          <mxGeometry y="70" width="410" height="86" as="geometry" />
+        </mxCell>
+
+        <!-- 4. TABELA: alunos (subclasse JOINED 1:1 com usuarios) -->
+        <mxCell id="t_alunos" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;alunos" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="520" y="300" width="420" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="t_alunos_pk" value="[PK, FK] usuario_id : BIGINT -&gt; usuarios(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_alunos">
+          <mxGeometry y="38" width="420" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_alunos_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#6c8ebf;" vertex="1" parent="t_alunos">
+          <mxGeometry y="62" width="420" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_alunos_cols" value="cpf : VARCHAR(14) NOT NULL UNIQUE&#xa;rg : VARCHAR(20) NOT NULL&#xa;endereco : VARCHAR(255) NOT NULL&#xa;curso : VARCHAR(120) NOT NULL&#xa;saldo_moedas : INTEGER NOT NULL DEFAULT 0&#xa;[FK] instituicao_id : BIGINT NOT NULL -&gt; instituicoes_ensino(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_alunos">
+          <mxGeometry y="70" width="420" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- 5. TABELA: empresas_parceiras (subclasse JOINED 1:1 com usuarios) -->
+        <mxCell id="t_empresas_parceiras" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;empresas_parceiras" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="300" width="380" height="118" as="geometry" />
+        </mxCell>
+        <mxCell id="t_empresas_parceiras_pk" value="[PK, FK] usuario_id : BIGINT -&gt; usuarios(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_empresas_parceiras">
+          <mxGeometry y="38" width="380" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_empresas_parceiras_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#6c8ebf;" vertex="1" parent="t_empresas_parceiras">
+          <mxGeometry y="62" width="380" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_empresas_parceiras_cols" value="cnpj : VARCHAR(18) NOT NULL UNIQUE&#xa;descricao : VARCHAR(500)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_empresas_parceiras">
+          <mxGeometry y="70" width="380" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- 6. TABELA: transacoes -->
+        <mxCell id="t_transacoes" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;transacoes" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="420" height="208" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transacoes_pk" value="[PK] id : BIGSERIAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_transacoes">
+          <mxGeometry y="38" width="420" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transacoes_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#82b366;" vertex="1" parent="t_transacoes">
+          <mxGeometry y="62" width="420" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transacoes_cols" value="data_hora : TIMESTAMP NOT NULL&#xa;valor_moedas : INTEGER NOT NULL&#xa;motivo : VARCHAR(500)&#xa;tipo : VARCHAR(30) NOT NULL&#xa;[FK] professor_id : BIGINT NULL -&gt; professores(usuario_id)&#xa;[FK] aluno_id : BIGINT NULL -&gt; alunos(usuario_id)&#xa;[FK] vantagem_id : BIGINT NULL -&gt; vantagens(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_transacoes">
+          <mxGeometry y="70" width="420" height="138" as="geometry" />
+        </mxCell>
+
+        <!-- 7. TABELA: cupons_resgate -->
+        <mxCell id="t_cupons_resgate" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;cupons_resgate" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="580" y="620" width="430" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cupons_resgate_pk" value="[PK] id : BIGSERIAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_cupons_resgate">
+          <mxGeometry y="38" width="430" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cupons_resgate_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#82b366;" vertex="1" parent="t_cupons_resgate">
+          <mxGeometry y="62" width="430" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cupons_resgate_cols" value="codigo_gerado : VARCHAR(60) NOT NULL UNIQUE&#xa;data_geracao : TIMESTAMP NOT NULL&#xa;utilizado : BOOLEAN NOT NULL DEFAULT FALSE&#xa;[FK] aluno_id : BIGINT NOT NULL -&gt; alunos(usuario_id)&#xa;[FK] vantagem_id : BIGINT NOT NULL -&gt; vantagens(id)&#xa;[FK] transacao_id : BIGINT NOT NULL UNIQUE -&gt; transacoes(id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_cupons_resgate">
+          <mxGeometry y="70" width="430" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- 8. TABELA: vantagens -->
+        <mxCell id="t_vantagens" value="&amp;lt;&amp;lt;table&amp;gt;&amp;gt;&#xa;vantagens" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="620" width="430" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="t_vantagens_pk" value="[PK] id : BIGSERIAL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;fontStyle=1;" vertex="1" parent="t_vantagens">
+          <mxGeometry y="38" width="430" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_vantagens_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#d6b656;" vertex="1" parent="t_vantagens">
+          <mxGeometry y="62" width="430" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="t_vantagens_cols" value="titulo : VARCHAR(150) NOT NULL&#xa;descricao : VARCHAR(500) NOT NULL&#xa;foto_produto : VARCHAR(500) NOT NULL&#xa;custo_moedas : INTEGER NOT NULL&#xa;ativa : BOOLEAN NOT NULL DEFAULT TRUE&#xa;[FK] empresa_id : BIGINT NOT NULL -&gt; empresas_parceiras(usuario_id)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=8;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=0;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="t_vantagens">
+          <mxGeometry y="70" width="430" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ====================================================================== -->
+        <!-- RELACIONAMENTOS E CARDINALIDADES OBRIGATÓRIAS                          -->
+        <!-- ====================================================================== -->
+
+        <!-- 1. usuarios (1) ── (0..1) alunos (PK/FK usuario_id) -->
+        <mxCell id="fk_usuarios_alunos" value="PK/FK usuario_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.5;exitY=1;entryX=0.76;entryY=0;" edge="1" parent="1" source="t_usuarios" target="t_alunos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_usuarios_alunos_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_alunos">
+          <mxGeometry x="-0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_usuarios_alunos_trg" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_alunos">
+          <mxGeometry x="0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. usuarios (1) ── (0..1) professores (PK/FK usuario_id) -->
+        <mxCell id="fk_usuarios_professores" value="PK/FK usuario_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.15;exitY=1;entryX=0.8;entryY=0;" edge="1" parent="1" source="t_usuarios" target="t_professores">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="714" y="245" />
+              <mxPoint x="368" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_usuarios_professores_src" value="1" style="edgeLabel;resizable=0;html=0;align=right;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_professores">
+          <mxGeometry x="-0.85" relative="1" as="geometry">
+            <mxPoint x="-6" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_usuarios_professores_trg" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_professores">
+          <mxGeometry x="0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. usuarios (1) ── (0..1) empresas_parceiras (PK/FK usuario_id) -->
+        <mxCell id="fk_usuarios_empresas" value="PK/FK usuario_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.85;exitY=1;entryX=0.45;entryY=0;" edge="1" parent="1" source="t_usuarios" target="t_empresas_parceiras">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="966" y="245" />
+              <mxPoint x="1201" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_usuarios_empresas_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_empresas">
+          <mxGeometry x="-0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_usuarios_empresas_trg" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_usuarios_empresas">
+          <mxGeometry x="0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. instituicoes_ensino (1) ── (0..*) alunos (FK instituicao_id) -->
+        <mxCell id="fk_instituicao_alunos" value="FK instituicao_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=1;exitY=0.5;entryX=0.25;entryY=0;" edge="1" parent="1" source="t_instituicoes_ensino" target="t_alunos">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="625" y="117" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_instituicao_alunos_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_instituicao_alunos">
+          <mxGeometry x="-0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_instituicao_alunos_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_instituicao_alunos">
+          <mxGeometry x="0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. instituicoes_ensino (1) ── (1..*) professores (FK instituicao_id) -->
+        <mxCell id="fk_instituicao_professores" value="FK instituicao_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.4;exitY=1;entryX=0.38;entryY=0;" edge="1" parent="1" source="t_instituicoes_ensino" target="t_professores">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_instituicao_professores_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_instituicao_professores">
+          <mxGeometry x="-0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_instituicao_professores_trg" value="1..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_instituicao_professores">
+          <mxGeometry x="0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. empresas_parceiras (1) ── (0..*) vantagens (FK empresa_id) -->
+        <mxCell id="fk_empresa_vantagens" value="FK empresa_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.75;exitY=1;entryX=0.43;entryY=0;" edge="1" parent="1" source="t_empresas_parceiras" target="t_vantagens">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_empresa_vantagens_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_empresa_vantagens">
+          <mxGeometry x="-0.8" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_empresa_vantagens_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_empresa_vantagens">
+          <mxGeometry x="0.8" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. professores (0..1) ── (0..*) transacoes (FK professor_id) -->
+        <mxCell id="fk_professor_transacoes" value="FK professor_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.45;exitY=1;entryX=0.44;entryY=0;" edge="1" parent="1" source="t_professores" target="t_transacoes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_professor_transacoes_src" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_professor_transacoes">
+          <mxGeometry x="-0.8" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_professor_transacoes_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_professor_transacoes">
+          <mxGeometry x="0.8" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. alunos (0..1) ── (0..*) transacoes (FK aluno_id) -->
+        <mxCell id="fk_aluno_transacoes" value="FK aluno_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.2;exitY=1;entryX=0.8;entryY=0;" edge="1" parent="1" source="t_alunos" target="t_transacoes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="604" y="555" />
+              <mxPoint x="376" y="555" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_aluno_transacoes_src" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_aluno_transacoes">
+          <mxGeometry x="-0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_aluno_transacoes_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_aluno_transacoes">
+          <mxGeometry x="0.85" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. vantagens (0..1) ── (0..*) transacoes (FK vantagem_id) -->
+        <mxCell id="fk_vantagem_transacoes" value="FK vantagem_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.45;exitY=1;entryX=0.55;entryY=1;" edge="1" parent="1" source="t_vantagens" target="t_transacoes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1323" y="900" />
+              <mxPoint x="271" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_vantagem_transacoes_src" value="0..1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_vantagem_transacoes">
+          <mxGeometry x="-0.9" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_vantagem_transacoes_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_vantagem_transacoes">
+          <mxGeometry x="0.9" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. alunos (1) ── (0..*) cupons_resgate (FK aluno_id) -->
+        <mxCell id="fk_aluno_cupons" value="FK aluno_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0.65;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="t_alunos" target="t_cupons_resgate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_aluno_cupons_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=top;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_aluno_cupons">
+          <mxGeometry x="-0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_aluno_cupons_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_aluno_cupons">
+          <mxGeometry x="0.75" relative="1" as="geometry">
+            <mxPoint x="8" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 11. vantagens (1) ── (0..*) cupons_resgate (FK vantagem_id) -->
+        <mxCell id="fk_vantagem_cupons" value="FK vantagem_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="t_vantagens" target="t_cupons_resgate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_vantagem_cupons_src" value="1" style="edgeLabel;resizable=0;html=0;align=right;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_vantagem_cupons">
+          <mxGeometry x="-0.75" relative="1" as="geometry">
+            <mxPoint x="-6" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_vantagem_cupons_trg" value="0..*" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_vantagem_cupons">
+          <mxGeometry x="0.75" relative="1" as="geometry">
+            <mxPoint x="6" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 12. transacoes (1) ── (0..1) cupons_resgate (FK transacao_id) -->
+        <mxCell id="fk_transacao_cupons" value="FK transacao_id" style="endArrow=none;html=0;rounded=0;strokeColor=#333333;strokeWidth=1.5;fontSize=10;fontFamily=Helvetica;exitX=1;exitY=0.46;entryX=0;entryY=0.5;" edge="1" parent="1" source="t_transacoes" target="t_cupons_resgate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_transacao_cupons_src" value="1" style="edgeLabel;resizable=0;html=0;align=left;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_transacao_cupons">
+          <mxGeometry x="-0.75" relative="1" as="geometry">
+            <mxPoint x="6" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_transacao_cupons_trg" value="0..1" style="edgeLabel;resizable=0;html=0;align=right;verticalAlign=bottom;fontSize=11;fontFamily=Helvetica;fontStyle=1;" connectable="0" vertex="1" parent="fk_transacao_cupons">
+          <mxGeometry x="0.75" relative="1" as="geometry">
+            <mxPoint x="-6" y="-4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
