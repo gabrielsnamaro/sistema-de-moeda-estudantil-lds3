@@ -33,6 +33,14 @@ public class EmpresaParceira extends Usuario {
         this.descricao = descricao;
     }
 
+    public Vantagem cadastrarVantagem(String titulo, String descricao, String fotoProduto, Integer custoMoedas) {
+        Vantagem vantagem = new Vantagem(titulo, descricao, fotoProduto, custoMoedas, this);
+        if (!vantagem.validarCusto()) {
+            throw new IllegalArgumentException("O custo da vantagem deve ser maior que zero.");
+        }
+        return vantagem;
+    }
+
     public String getCnpj() {
         return cnpj;
     }

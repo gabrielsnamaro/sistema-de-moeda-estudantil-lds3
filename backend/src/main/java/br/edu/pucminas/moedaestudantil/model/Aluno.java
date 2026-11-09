@@ -1,6 +1,7 @@
 package br.edu.pucminas.moedaestudantil.model;
 
 import br.edu.pucminas.moedaestudantil.model.enums.TipoPerfil;
+import br.edu.pucminas.moedaestudantil.model.enums.TipoTransacao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,6 +69,22 @@ public class Aluno extends Usuario {
             throw new IllegalArgumentException("Saldo insuficiente para descontar moedas.");
         }
         this.saldoMoedas -= valor;
+    }
+
+    public CupomResgate resgatarVantagem(Vantagem vantagem) {
+        if (vantagem == null || !Boolean.TRUE.equals(vantagem.getAtiva())) {
+            throw new IllegalArgumentException("Vantagem indisponível para resgate.");
+        }
+        Integer custo = vantagem.getCustoMoedas();
+        int saldo = this.saldoMoedas == null ? 0 : this.saldoMoedas;
+        if (saldo < custo) {
+            throw new IllegalArgumentException(
+                    "Saldo insuficiente: você possui " + saldo + " moedas e a vantagem custa " + custo + ".");
+        }
+        descontarMoedas(custo);
+        Transacao transacao = new Transacao(
+                custo, "Resgate: " + vantagem.getTitulo(), TipoTransacao.RESGATE_VANTAGEM, null, this, vantagem);
+        return new CupomResgate(CupomResgate.gerarCodigoUnico(), this, vantagem, transacao);
     }
 
     public String getCpf() {
