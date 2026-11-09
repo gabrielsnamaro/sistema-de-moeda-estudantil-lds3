@@ -1,5 +1,6 @@
 package br.edu.pucminas.moedaestudantil.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -7,14 +8,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
+    // Origens do front-end aceitas pela API (localhost no desenvolvimento, domínio da Vercel no deploy).
+    private final String[] origensPermitidas;
+
+    public CorsConfig(@Value("${app.cors.allowed-origins}") String[] origensPermitidas) {
+        this.origensPermitidas = origensPermitidas;
+    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://localhost:5173",
-                        "http://127.0.0.1:5173",
-                        "http://localhost:3000"
-                )
+                .allowedOriginPatterns(origensPermitidas)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
