@@ -1,40 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AuthView from './views/AuthView';
 import AlunoView from './views/AlunoView';
+import ProfessorView from './views/ProfessorView';
 import EmpresaParceiraView from './views/EmpresaParceiraView';
+import { obterSessao, limparSessao, logout } from './services/api';
+
+const ROTULO_PERFIL = {
+  ALUNO: 'Aluno',
+  PROFESSOR: 'Professor',
+  EMPRESA_PARCEIRA: 'Empresa parceira',
+};
 
 export default function App() {
-  const [abaAtiva, setAbaAtiva] = useState('alunos');
+  const [sessao, setSessao] = useState(obterSessao);
+
+  useEffect(() => {
+    const aoExpirar = () => setSessao(null);
+    window.addEventListener('sessao-expirada', aoExpirar);
+    return () => window.removeEventListener('sessao-expirada', aoExpirar);
+  }, []);
+
+  async function sair() {
+    try {
+      await logout();
+    } catch {
+      // sessão já inválida no servidor: segue com a limpeza local
+    }
+    limparSessao();
+    setSessao(null);
+  }
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <div className="topbar-brand">
-          <h1>Sistema de Moeda Estudantil — PUC Minas (Sprint 02)</h1>
-          <span>
-            Persistência ORM (Spring Data JPA + PostgreSQL) e CRUDs de Alunos e Empresas Parceiras
-          </span>
+          <h1>Sistema de Moeda Estudantil — PUC Minas</h1>
+          <span>Sprint 03 — protótipo final</span>
         </div>
 
-        <nav className="nav-tabs" aria-label="Módulos do sistema">
-          <button
-            type="button"
-            className={`nav-tab ${abaAtiva === 'alunos' ? 'active' : ''}`}
-            onClick={() => setAbaAtiva('alunos')}
-          >
-            Gestão de Alunos (CRUD)
-          </button>
-          <button
-            type="button"
-            className={`nav-tab ${abaAtiva === 'empresas' ? 'active' : ''}`}
-            onClick={() => setAbaAtiva('empresas')}
-          >
-            Gestão de Empresas Parceiras (CRUD)
-          </button>
-        </nav>
+        {sessao && (
+          <div className="topbar-user">
+            <span>
+              {sessao.nome} · {ROTULO_PERFIL[sessao.tipoPerfil] || sessao.tipoPerfil}
+            </span>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={sair}>
+              Sair
+            </button>
+          </div>
+        )}
       </header>
 
       <main className="container">
-        {abaAtiva === 'alunos' ? <AlunoView /> : <EmpresaParceiraView />}
+        {!sessao && <AuthView onLogin={setSessao} />}
+        {sessao?.tipoPerfil === 'ALUNO' && <AlunoView sessao={sessao} onSair={sair} />}
+        {sessao?.tipoPerfil === 'PROFESSOR' && <ProfessorView sessao={sessao} />}
+        {sessao?.tipoPerfil === 'EMPRESA_PARCEIRA' && (
+          <EmpresaParceiraView sessao={sessao} onSair={sair} />
+        )}
       </main>
     </div>
   );

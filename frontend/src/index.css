@@ -302,3 +302,110 @@ body {
   color: var(--text-muted);
   font-size: 0.95rem;
 }
+
+.alert-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.sub-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.sub-tab {
+  background: #e2e8f0;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.sub-tab:hover {
+  background: #cbd5e1;
+}
+
+.sub-tab.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.vantagens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.vantagem-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+.vantagem-foto {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.vantagem-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f1f5f9;
+}
+
+.cupom-codigo {
+  display: inline-block;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  background: #eff6ff;
+  border: 2px dashed var(--primary);
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+}
+
+.auth-wrapper {
+  max-width: 480px;
+  margin: 2rem auto 0;
+}
+
+.auth-wrapper-wide {
+  max-width: 720px;
+}
+
+.auth-wrapper .form-actions {
+  flex-wrap: wrap;
+}
+
+.auth-wrapper > .form-actions {
+  margin: 0 0 1rem;
+}
