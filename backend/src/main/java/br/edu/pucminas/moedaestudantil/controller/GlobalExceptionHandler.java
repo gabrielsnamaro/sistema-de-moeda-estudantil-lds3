@@ -1,6 +1,9 @@
 package br.edu.pucminas.moedaestudantil.controller;
 
+import br.edu.pucminas.moedaestudantil.exception.AcessoNegadoException;
+import br.edu.pucminas.moedaestudantil.exception.NaoAutenticadoException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,6 +48,30 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                 "erro", mensagemConsolidada,
+                "timestamp", LocalDateTime.now().toString()
+        ));
+    }
+
+    @ExceptionHandler(NaoAutenticadoException.class)
+    public ResponseEntity<Map<String, String>> handleNaoAutenticado(NaoAutenticadoException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "erro", ex.getMessage(),
+                "timestamp", LocalDateTime.now().toString()
+        ));
+    }
+
+    @ExceptionHandler(AcessoNegadoException.class)
+    public ResponseEntity<Map<String, String>> handleAcessoNegado(AcessoNegadoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "erro", ex.getMessage(),
+                "timestamp", LocalDateTime.now().toString()
+        ));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "erro", "Não é possível concluir a operação: o registro possui vínculos (transações, vantagens ou cupons).",
                 "timestamp", LocalDateTime.now().toString()
         ));
     }
