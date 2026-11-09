@@ -1,6 +1,7 @@
 package br.edu.pucminas.moedaestudantil.model;
 
 import br.edu.pucminas.moedaestudantil.model.enums.TipoPerfil;
+import br.edu.pucminas.moedaestudantil.model.enums.TipoTransacao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -53,6 +54,24 @@ public class Professor extends Usuario {
 
     public boolean possuiSaldoSuficiente(Integer valor) {
         return valor != null && valor > 0 && this.saldoMoedas != null && this.saldoMoedas >= valor;
+    }
+
+    public Transacao enviarMoedas(Aluno aluno, Integer valor, String motivo) {
+        if (aluno == null) {
+            throw new IllegalArgumentException("O aluno destinatário é obrigatório.");
+        }
+        if (motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("O motivo do reconhecimento é obrigatório.");
+        }
+        if (valor == null || valor <= 0) {
+            throw new IllegalArgumentException("O valor enviado deve ser maior que zero.");
+        }
+        if (!possuiSaldoSuficiente(valor)) {
+            throw new IllegalArgumentException("Saldo insuficiente: o professor possui " + saldoMoedas + " moedas.");
+        }
+        this.saldoMoedas -= valor;
+        aluno.adicionarMoedas(valor);
+        return new Transacao(valor, motivo.trim(), TipoTransacao.ENVIO_MOEDAS, this, aluno, null);
     }
 
     public String getCpf() {

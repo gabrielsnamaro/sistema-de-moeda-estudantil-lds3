@@ -2,8 +2,11 @@ package br.edu.pucminas.moedaestudantil.config;
 
 import br.edu.pucminas.moedaestudantil.model.InstituicaoEnsino;
 import br.edu.pucminas.moedaestudantil.model.Professor;
+import br.edu.pucminas.moedaestudantil.model.Transacao;
+import br.edu.pucminas.moedaestudantil.model.enums.TipoTransacao;
 import br.edu.pucminas.moedaestudantil.repository.InstituicaoEnsinoRepository;
 import br.edu.pucminas.moedaestudantil.repository.ProfessorRepository;
+import br.edu.pucminas.moedaestudantil.repository.TransacaoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +17,15 @@ public class DataSeeder implements CommandLineRunner {
 
     private final InstituicaoEnsinoRepository instituicaoEnsinoRepository;
     private final ProfessorRepository professorRepository;
+    private final TransacaoRepository transacaoRepository;
 
     public DataSeeder(
             InstituicaoEnsinoRepository instituicaoEnsinoRepository,
-            ProfessorRepository professorRepository) {
+            ProfessorRepository professorRepository,
+            TransacaoRepository transacaoRepository) {
         this.instituicaoEnsinoRepository = instituicaoEnsinoRepository;
         this.professorRepository = professorRepository;
+        this.transacaoRepository = transacaoRepository;
     }
 
     @Override
@@ -66,7 +72,17 @@ public class DataSeeder implements CommandLineRunner {
                     pucMinas);
             profCarlos.setSaldoMoedas(1000);
 
-            professorRepository.saveAll(List.of(profMilena, profCarlos));
+            List<Professor> salvos = professorRepository.saveAll(List.of(profMilena, profCarlos));
+
+            for (Professor professor : salvos) {
+                transacaoRepository.save(new Transacao(
+                        1000,
+                        "Crédito semestral inicial (1.000 moedas)",
+                        TipoTransacao.CREDITO_SEMESTRAL,
+                        professor,
+                        null,
+                        null));
+            }
         }
     }
 }
