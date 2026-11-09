@@ -2,6 +2,7 @@
 
 **Laboratório de Desenvolvimento de Software — PUC Minas**  
 **Docente:** Profa. Milena Menezes Adão  
+**Escopo do repositório:** Sprints 01, 02 e 03 (protótipo final)  
 
 ### Integrantes da Equipe
 - **Fabrício Rocha Lopes**
@@ -42,7 +43,7 @@ Abaixo constam as dez Histórias de Usuário detalhadas, cobrindo integralmente 
 ### US01 — Realizar Login / Autenticação
 - **História:** *Como* usuário do sistema (Aluno, Professor ou Empresa Parceira), *eu quero* me autenticar informando login e senha válidos, *para que* eu possa acessar as funcionalidades restritas e seguras do meu perfil na plataforma.
 - **Critérios de Aceitação:**
-  1. O sistema deve validar as credenciais informadas contra a base de usuários cadastrados e verificar o hash seguro da senha.
+  1. O sistema deve validar as credenciais informadas contra a base de usuários cadastrados comparando a senha informada com a cadastrada.
   2. Em caso de sucesso, o sistema deve iniciar uma sessão de usuário autenticada e redirecionar para a interface correspondente ao perfil (`ALUNO`, `PROFESSOR` ou `EMPRESA_PARCEIRA`).
   3. Se o login ou a senha estiverem incorretos, o sistema deve apresentar uma mensagem de erro clara ("Credenciais inválidas") sem expor detalhes internos.
   4. Nenhuma operação de consulta de extrato, transferência de moedas, cadastro de vantagens ou resgates deve ser permitida sem autenticação prévia ativa.
@@ -178,10 +179,12 @@ Esta seção consolida os três diagramas UML que compõem o modelo da Sprint 01
 
 ### 4.2 Diagrama de Classes
 
-- **Arquivo editável Draw.io:** [diagrama-de-classes.drawio](diagrama-de-classes.drawio)
+- **Arquivo editável Draw.io:** [diagrama-de-classes-v1.drawio](diagrama-de-classes-v1.drawio)
 - **Representação visual:**
 
-![Diagrama de Classes](img/diagrama-de-classes.png)
+![Diagrama de Classes (v1)](img/diagrama-de-classes-v1.png)
+
+> Versão da Sprint 01. A versão atualizada está na [seção 6.6](#66-modelos-uml-atualizados-v2).
 
 #### Matriz de Rastreabilidade e Cobertura de Requisitos (Classes de Domínio)
 
@@ -202,10 +205,12 @@ Esta seção consolida os três diagramas UML que compõem o modelo da Sprint 01
 
 ### 4.3 Diagrama de Componentes (Arquitetura MVC)
 
-- **Arquivo editável Draw.io:** [diagrama-de-componentes.drawio](diagrama-de-componentes.drawio)
+- **Arquivo editável Draw.io:** [diagrama-de-componentes-v1.drawio](diagrama-de-componentes-v1.drawio)
 - **Representação visual:**
 
-![Diagrama de Componentes](img/diagrama-de-componentes.png)
+![Diagrama de Componentes (v1)](img/diagrama-de-componentes-v1.png)
+
+> Versão da Sprint 01. A versão atualizada está na [seção 6.6](#66-modelos-uml-atualizados-v2).
 
 #### Matriz de Rastreabilidade e Cobertura Arquitetural (Componentes)
 
@@ -220,7 +225,7 @@ Esta seção consolida os três diagramas UML que compõem o modelo da Sprint 01
 | **`AlunoController`** | Controller (REST API) | Spring Web REST (`/api/alunos`) | Endpoints REST para cadastro de alunos, seleção de instituições e consulta de dados. |
 | **`ProfessorMoedaController`** | Controller (REST API) | Spring Web REST (`/api/moedas`) | Endpoints REST para crédito semestral, transferência de moedas com motivo e consulta de extratos. |
 | **`EmpresaVantagemController`** | Controller (REST API) | Spring Web REST (`/api/vantagens`) | Endpoints REST para cadastro de parceiros, manutenção de vantagens e fluxo de resgate de cupons. |
-| **`AutenticacaoService`** | Model / Service | Spring Service | Lógica de verificação de senhas com hash, controle de papéis e segurança. |
+| **`AutenticacaoService`** | Model / Service | Spring Service | Verificação de credenciais (login e senha), controle de papéis e sessão por token. |
 | **`ContaMoedaService`** | Model / Service | Spring Service | Gestão de saldos, aplicação do crédito semestral cumulativo (1.000 moedas) e transferência entre contas. |
 | **`VantagemResgateService`** | Model / Service | Spring Service | Validação de custo em moedas, baixa no saldo do aluno e geração de código de conferência único. |
 | **`DomainModel`** | Model / Domínio | JPA Entities | Entidades de domínio mapeadas (`Usuario`, `Aluno`, `Professor`, `EmpresaParceira`, `InstituicaoEnsino`, `Vantagem`, `Transacao`, `CupomResgate`). |
@@ -361,6 +366,8 @@ A camada de persistência foi implementada no módulo `backend/` utilizando **Sp
 
 ### 5.4 Como Executar o Projeto (Sprint 02)
 
+> Para executar a versão final (Sprint 03), veja a [seção 6.8](#68-como-executar-e-roteiro-de-demonstração).
+
 #### Pré-requisitos
 - **Docker** e **Docker Compose** instalados (não é necessário ter Java, Maven, PostgreSQL ou Node.js instalados no sistema operacional).
 
@@ -404,3 +411,149 @@ Caso deseje executar módulos individualmente no sistema host durante o desenvol
    cd frontend && npm install && npm run dev
    ```
 
+---
+
+## 6. Entregáveis da Sprint 03 (`Lab03S03`) — Protótipo Final
+
+Esta seção consolida o **protótipo final** (Sprint 03): autenticação obrigatória para todos os perfis, envio de moedas com extrato, cadastro e resgate de vantagens, envio de e-mails via EmailJS, CRUDs finais de aluno e empresa parceira, modelos UML atualizados (v2) e a apresentação da arquitetura e da camada de persistência.
+
+---
+
+### 6.1 Requisitos do Enunciado × Implementação
+
+| Requisito do enunciado | Onde está no código | Rota REST | Tela |
+| :--- | :--- | :--- | :--- |
+| Cadastro de aluno com instituição pré-cadastrada | `AlunoService` valida a instituição; `DataSeeder` cria as 3 instituições | `POST /api/alunos`, `GET /api/instituicoes` | `AuthView` (cadastro público) |
+| Professores pré-cadastrados | `DataSeeder` (idempotente) | — | `AuthView` (login) |
+| 1.000 moedas por semestre, acumuláveis | `ContaMoedaService.creditarSemestre` com `@Scheduled` em 1º/jan e 1º/jul; crédito inicial (`CREDITO_SEMESTRAL`) no seed | — (sem endpoint manual) | `ProfessorView` (saldo e extrato) |
+| Envio de moedas com saldo suficiente e motivo obrigatório | `ContaMoedaService` + `Professor.enviarMoedas` | `POST /api/moedas/envios` | `ProfessorView` |
+| E-mail ao aluno ao receber moedas | `notificarRecebimentoMoedas` (`emailjs.js`) | — (feito pelo front) | `ProfessorView` |
+| Extrato de aluno e de professor | `ContaMoedaService` | `GET /api/moedas/extrato` | `Extrato` (em `AlunoView` e `ProfessorView`) |
+| Cadastro de vantagens pela empresa (descrição, foto por URL e custo) | `VantagemResgateService` | `POST/PUT/DELETE /api/vantagens`, `GET /api/vantagens/minhas` | `EmpresaParceiraView` (aba Vantagens) |
+| Resgate com desconto do saldo e código gerado | `VantagemResgateService` + `Aluno.resgatarVantagem` + `CupomResgate.gerarCodigoUnico` | `POST /api/vantagens/{id}/resgates`, `GET /api/vantagens/cupons` | `AlunoView` (abas Vantagens e Meus cupons) |
+| E-mail de cupom ao aluno e de conferência à empresa, com o mesmo código | `enviarCupomAluno` e `enviarConferenciaParceiro` (`emailjs.js`), ambos com o `codigoGerado` do cupom | — (feito pelo front) | `AlunoView` |
+| Login e senha para todos, com autenticação obrigatória | `AutenticacaoService`, `AuthController`, `AuthInterceptor` | `POST /api/auth/login`, `POST /api/auth/logout` | `AuthView` |
+| CRUDs finais de aluno e empresa parceira | `AlunoController`, `EmpresaParceiraController` (PUT/DELETE só do próprio usuário) | `/api/alunos`, `/api/empresas` | `AlunoView` (Meu perfil), `EmpresaParceiraView` (aba Meu perfil) |
+
+---
+
+### 6.2 Autenticação
+
+- **Login:** `POST /api/auth/login` recebe `{login, senha}` e devolve `{token, id, nome, email, tipoPerfil}`. A senha é comparada diretamente com a cadastrada (`Usuario.autenticar`); não há hash, por decisão da sprint.
+- **Uso do token:** o front (`frontend/src/services/api.js`) envia `Authorization: Bearer <token>` em toda chamada. O `AuthInterceptor` (registrado em `AutenticacaoConfig`) bloqueia as demais rotas de `/api` sem token válido.
+- **Rotas públicas:** `POST /api/auth/login`, `GET /api/instituicoes`, `POST /api/alunos` (cadastro de aluno) e `POST /api/empresas` (cadastro de empresa).
+- **Sessão em memória:** os tokens ficam na memória da API (`AutenticacaoService`); reiniciar a API desloga todos e o front volta à tela de login.
+- **Perfis e respostas de erro:** o perfil (`ALUNO`, `PROFESSOR`, `EMPRESA_PARCEIRA`) vem do usuário da sessão. As respostas de erro têm sempre o corpo `{"erro": "...", "timestamp": "..."}`:
+
+| Status | Quando acontece |
+| :---: | :--- |
+| `401 Unauthorized` | Sem token, token inválido ou sessão perdida; também no login com credenciais erradas (`Login ou senha inválidos.`). |
+| `403 Forbidden` | Perfil sem permissão na rota ou tentativa de alterar/excluir recurso de outro usuário. |
+| `400 Bad Request` | Validação ou regra de negócio (saldo insuficiente, motivo vazio, custo inválido). |
+| `404 Not Found` | Recurso inexistente. |
+| `409 Conflict` | Duplicidade de `cpf`, `cnpj`, `email` ou `login`, ou exclusão bloqueada por vínculo. |
+
+---
+
+### 6.3 Endpoints REST (`http://localhost:8080/api`)
+
+| Método HTTP | Rota | Perfil | Descrição |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/login` | Público | Autentica com `{login, senha}` e devolve o token e os dados do usuário. |
+| `POST` | `/api/auth/logout` | Logado | Encerra a sessão (`204`). |
+| `GET` | `/api/instituicoes` | Público | Lista as instituições pré-cadastradas para o seletor do cadastro de aluno. |
+| `POST` | `/api/alunos` | Público | Cadastra aluno (`201`), com saldo inicial `0`. |
+| `GET` | `/api/alunos`, `/api/alunos/{id}` | Logado | Lista ou busca alunos. |
+| `PUT` | `/api/alunos/{id}` | Próprio aluno | Atualiza os dados do aluno (`403` para outro usuário). |
+| `DELETE` | `/api/alunos/{id}` | Próprio aluno | Exclui o aluno (`204`). |
+| `POST` | `/api/empresas` | Público | Cadastra empresa parceira (`201`). |
+| `GET` | `/api/empresas`, `/api/empresas/{id}` | Logado | Lista ou busca empresas parceiras. |
+| `PUT` | `/api/empresas/{id}` | Própria empresa | Atualiza os dados da empresa (`403` para outro usuário). |
+| `DELETE` | `/api/empresas/{id}` | Própria empresa | Exclui a empresa (`204`; `409` se houver vínculo). |
+| `GET` | `/api/moedas/extrato` | `ALUNO` ou `PROFESSOR` | Devolve `{saldoMoedas, transacoes}`, da mais recente para a mais antiga. |
+| `POST` | `/api/moedas/envios` | `PROFESSOR` | Envia moedas com `{alunoId, valor, motivo}` (`201`); valida saldo e motivo. |
+| `GET` | `/api/vantagens` | Logado | Lista as vantagens ativas do catálogo. |
+| `GET` | `/api/vantagens/minhas` | `EMPRESA_PARCEIRA` | Lista as vantagens ativas da própria empresa. |
+| `POST` | `/api/vantagens` | `EMPRESA_PARCEIRA` | Cadastra vantagem com `{titulo, descricao, fotoProduto, custoMoedas}` (`201`). |
+| `PUT` | `/api/vantagens/{id}` | Empresa dona | Atualiza a vantagem. |
+| `DELETE` | `/api/vantagens/{id}` | Empresa dona | Desativa a vantagem (`ativa = false`, `204`). |
+| `POST` | `/api/vantagens/{id}/resgates` | `ALUNO` | Resgata a vantagem, debita o saldo e devolve o cupom com `codigoGerado` (`201`). |
+| `GET` | `/api/vantagens/cupons` | `ALUNO` | Lista os cupons do aluno. |
+
+---
+
+### 6.4 Telas por Perfil (`React + Vite`)
+
+- **Login e cadastro (`AuthView`):** login para qualquer perfil; cadastro público de aluno (com seletor de instituição) e de empresa parceira.
+- **Aluno (`AlunoView`):** abas **Vantagens** (catálogo com foto, descrição, custo e botão de resgate), **Meus cupons**, **Extrato** e **Meu perfil** (edição e exclusão da conta).
+- **Professor (`ProfessorView`):** envio de moedas (aluno, valor e motivo obrigatório) e extrato com saldo.
+- **Empresa parceira (`EmpresaParceiraView`):** abas **Vantagens** (cadastro com descrição, URL da foto com pré-visualização e custo, edição e desativação) e **Meu perfil** (edição e exclusão da conta).
+
+---
+
+### 6.5 Envio de E-mails (EmailJS)
+
+**Por que pelo front-end:** a decisão `D4` da Sprint 01 coloca o envio no cliente, e o diagrama de componentes prevê o `EmailJSClient`, implementado em `frontend/src/services/emailjs.js` (`notificarRecebimentoMoedas`, `enviarCupomAluno` e `enviarConferenciaParceiro`). Ele chama a API REST do EmailJS com `fetch`, sem dependência nova. Se o e-mail falhar, a transação já gravada não é desfeita.
+
+**Como configurar:**
+1. Criar uma conta em [emailjs.com](https://www.emailjs.com) e conectar um **Email Service**.
+2. Criar um **template** com `{{to_email}}` no campo "To Email", `{{subject}}` no assunto e `{{message}}` no corpo.
+3. Preencher `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID` e `VITE_EMAILJS_PUBLIC_KEY` no `.env` da raiz (Docker Compose; modelo em `.env.example`) ou em `frontend/.env` (`npm run dev`).
+4. Reiniciar o front-end (`docker compose up -d --force-recreate frontend` ou reiniciar o `npm run dev`).
+
+Sem essas variáveis, a tela avisa **"E-mail não enviado"** e o restante da operação continua normal.
+
+---
+
+### 6.6 Modelos UML Atualizados (v2)
+
+- **Diagrama de Classes v2:** [diagrama-de-classes.drawio](diagrama-de-classes.drawio)
+
+![Diagrama de Classes (v2)](img/diagrama-de-classes.png)
+
+- **Diagrama de Componentes v2:** [diagrama-de-componentes.drawio](diagrama-de-componentes.drawio)
+
+![Diagrama de Componentes (v2)](img/diagrama-de-componentes.png)
+
+**O que mudou em relação à v1 (Sprint 01):**
+- **Classes:** `tipoPerfil`/`TipoPerfil` em `Usuario`, `endereco` em `InstituicaoEnsino`, `descricao` em `EmpresaParceira`, `ativa` em `Vantagem`, `utilizado` em `CupomResgate` e métodos alinhados aos do código.
+- **Componentes:** controllers, services e os 8 repositórios reais, mais `AuthView`, `ProfessorView`, `api.js` e `AuthInterceptor`.
+- **Modelo ER:** não mudou (nenhuma tabela nova); continua em [modelo-er.drawio](modelo-er.drawio).
+
+**Versões anteriores (Sprint 01):** [diagrama-de-classes-v1.drawio](diagrama-de-classes-v1.drawio) ([PNG](img/diagrama-de-classes-v1.png)) e [diagrama-de-componentes-v1.drawio](diagrama-de-componentes-v1.drawio) ([PNG](img/diagrama-de-componentes-v1.png)).
+
+---
+
+### 6.7 Apresentação
+
+- **Slides:** [apresentacao-sprint3.pptx](apresentacao-sprint3.pptx), com a arquitetura MVC, a camada de persistência e o tutorial das tecnologias para o salão de tecnologias (20 minutos), com notas do apresentador.
+
+---
+
+### 6.8 Como Executar e Roteiro de Demonstração
+
+```bash
+docker compose up -d
+```
+
+- **Front-end:** `http://localhost:5173`
+- **API:** `http://localhost:8080/api`
+- **Professores pré-cadastrados:** `milena.adao` e `carlos.almeida`, ambos com a senha `prof123` e 1.000 moedas.
+
+**Roteiro de demonstração:**
+1. Na tela de login, cadastrar um aluno e uma empresa parceira.
+2. Entrar como empresa e cadastrar uma vantagem (descrição, URL da foto e custo).
+3. Entrar como professor e enviar moedas ao aluno com um motivo.
+4. Entrar como aluno, conferir o extrato e resgatar a vantagem.
+5. Conferir o código do cupom na tela e os e-mails enviados ao aluno e à empresa (com o EmailJS configurado, seção 6.5).
+
+---
+
+### 6.9 Fora do Escopo
+
+- Hash de senha, Spring Security/JWT e expiração de sessão.
+- Upload de arquivo para a foto da vantagem (usa URL).
+- Endpoint manual de crédito semestral.
+- Marcação do cupom como utilizado pela empresa.
+- Filtro de alunos por instituição do professor.
+- Testes automatizados novos.
