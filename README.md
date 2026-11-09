@@ -532,6 +532,18 @@ Sem essas variáveis, a tela avisa **"E-mail não enviado"** e o restante da ope
 
 ### 6.8 Como Executar e Roteiro de Demonstração
 
+**Acesso online (deploy):**
+
+| Parte | Onde | URL |
+| :--- | :--- | :--- |
+| Front-end (React + Vite) | Vercel | https://moeda-estudantil-lds3.vercel.app |
+| API (Spring Boot em Docker) | Render, plano gratuito | https://sistema-de-moeda-estudantil-lds3.onrender.com/api |
+| Banco PostgreSQL | Render Postgres, plano gratuito | acesso interno pela API |
+
+A API gratuita do Render hiberna após 15 minutos sem acesso; o primeiro acesso depois disso leva cerca de 1 minuto. O deploy da API usa `backend/Dockerfile` e as variáveis `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` e `CORS_ALLOWED_ORIGINS`; o do front usa `VITE_API_BASE_URL` e as `VITE_EMAILJS_*`.
+
+**Execução local:**
+
 ```bash
 docker compose up -d
 ```
