@@ -1,8 +1,8 @@
-# Sistema de Moeda Estudantil — Laboratório 3
+# Sistema de Moeda Estudantil — Laboratórios 3 e 4
 
 **Laboratório de Desenvolvimento de Software — PUC Minas**  
 **Docente:** Profa. Milena Menezes Adão  
-**Escopo do repositório:** Sprints 01, 02 e 03 (protótipo final)  
+**Escopo do repositório:** Release 1 (Lab03, Sprints 01 a 03, protótipo final) e Release 2 (Lab04, Sprint 01)  
 
 ### Integrantes da Equipe
 - **Fabrício Rocha Lopes**
@@ -29,7 +29,7 @@ O projeto foi concebido seguindo o padrão arquitetural **MVC (Model-View-Contro
 - **View (Front-end SPA):** Interface gráfica desenvolvida em **React** (utilizando **Vite** como ferramenta de build). Organizada em telas modulares para cada ator (`AuthView`, `AlunoView`, `ProfessorView` e `EmpresaParceiraView`), consumindo os endpoints REST do Back-end de forma assíncrona.
 - **Controller (Back-end REST API):** Construído sobre **Java + Spring Boot** (`Spring Web REST`), provendo controllers REST (`AuthController`, `AlunoController`, `ProfessorMoedaController`, `EmpresaVantagemController`) responsáveis pelo mapeamento de rotas HTTP, validação de payload, autenticação e despacho para a camada de serviços.
 - **Model & Service (Camada de Negócio e Domínio):** Composto pelas entidades ricas de domínio (`Usuario`, `Aluno`, `Professor`, `EmpresaParceira`, `InstituicaoEnsino`, `Vantagem`, `Transacao`, `CupomResgate`) e pelos serviços especializados (`AutenticacaoService`, `ContaMoedaService`, `VantagemResgateService`), onde residem as regras de validação de saldo, cumulatividade de créditos e geração de cupons.
-- **Data Access & Persistência:** Implementado com **Spring Data JPA** e **Hibernate ORM**, fornecendo abstração de repositórios (`UsuarioRepository`, `TransacaoRepository`, `VantagemCupomRepository`) sobre o banco de dados relacional **PostgreSQL** (executado em contêiner Docker ou instância local).
+- **Data Access & Persistência:** Implementado com **Spring Data JPA** e **Hibernate ORM**, fornecendo abstração de repositórios (`UsuarioRepository`, `TransacaoRepository`, `VantagemRepository`, `CupomResgateRepository` e os demais da seção 5.2) sobre o banco de dados relacional **PostgreSQL** (executado em contêiner Docker ou instância local).
 - **Serviço de Comunicação Externa (E-mail):** Integração com o serviço **EmailJS** via requisições REST/HTTPS (`EmailJSClient`), possibilitando o disparo automatizado e auditável das mensagens de reconhecimento e dos códigos de validação de cupons.
 
 ---
@@ -65,7 +65,7 @@ Abaixo constam as dez Histórias de Usuário detalhadas, cobrindo integralmente 
 - **Critérios de Aceitação:**
   1. O formulário de cadastro deve exigir os seguintes campos: Razão Social/Nome Fantasia, CNPJ, E-mail institucional de contato, Login e Senha.
   2. O CNPJ deve ser validado quanto ao formato e à unicidade cadastral no sistema.
-  3. A senha deve ser criptografada antes de ser armazenada no banco de dados.
+  3. A senha é armazenada como foi cadastrada, sem hash (decisão da Sprint 03; ver seções 6.2 e 6.9).
   4. Após o cadastro concluído com êxito, a empresa parceira deve conseguir realizar login e acessar o painel de gestão de vantagens.
 
 ---
@@ -93,11 +93,11 @@ Abaixo constam as dez Histórias de Usuário detalhadas, cobrindo integralmente 
 ### US06 — Enviar Moedas a Aluno
 - **História:** *Como* professor autenticado, *eu quero* transferir uma quantia de moedas da minha conta para um aluno específico acompanhada de uma justificativa textual obrigatória, *para que* eu possa reconhecer e valorizar o seu mérito acadêmico.
 - **Critérios de Aceitação:**
-  1. O professor deve selecionar o aluno beneficiário a partir de uma listagem ou busca por nome/matrícula/CPF.
+  1. O professor deve selecionar o aluno beneficiário na listagem dos alunos da sua instituição de ensino; o envio a aluno de outra instituição é recusado (Release 2, seção 7.1).
   2. O professor deve informar o valor de moedas a ser transferido (número inteiro positivo) e uma mensagem textual aberta explicando o motivo do reconhecimento.
   3. O campo de motivo é de preenchimento obrigatório; o sistema deve rejeitar envios com justificativa vazia ou apenas com espaços em branco.
   4. O sistema deve validar se o professor possui saldo suficiente (`saldoMoedas >= valorTransferencia`). Caso o saldo seja insuficiente, o envio é bloqueado exibindo mensagem de erro.
-  5. Havendo saldo suficiente, o valor é deduzido imediatamente do saldo do professor e acrescido ao saldo do aluno, gerando uma transação do tipo `ENVIO_RECONHECIMENTO` no extrato de ambos.
+  5. Havendo saldo suficiente, o valor é deduzido imediatamente do saldo do professor e acrescido ao saldo do aluno, gerando uma transação do tipo `ENVIO_MOEDAS` no extrato de ambos.
 
 ---
 
@@ -106,7 +106,7 @@ Abaixo constam as dez Histórias de Usuário detalhadas, cobrindo integralmente 
 - **Critérios de Aceitação:**
   1. Concluída a transferência com sucesso na `US06`, o sistema aciona o serviço de e-mail (EmailJS) de maneira assíncrona.
   2. O e-mail enviado ao aluno deve conter: nome do professor remetente, quantidade de moedas creditadas, mensagem com a justificativa/motivo do reconhecimento e o novo saldo total de moedas do aluno.
-  3. Falhas eventuais de rede com o serviço de e-mail devem ser tratadas sem reverter a transação de banco de dados, registrando o status de entrega para auditoria.
+  3. Falhas eventuais de rede com o serviço de e-mail devem ser tratadas sem reverter a transação de banco de dados; a tela informa se o e-mail foi enviado ou não.
 
 ---
 
@@ -196,7 +196,7 @@ Esta seção consolida os três diagramas UML que compõem o modelo da Sprint 01
 | **`EmpresaParceira`** | Classe (Herança de `Usuario`) | RF03, RF04 | Possui `cnpj` e `descricao`. Métodos: `cadastrarVantagem()` e `listarVantagens()`. Possui composição com `Vantagem` (`1` para `0..*`). |
 | **`InstituicaoEnsino`** | Classe | RF05, RN01 | Entidade pré-cadastrada com `nome`, `cnpj` e `endereco`. Agrega obrigatoriamente professores (`1` para `1..*`) e alunos vinculados (`1` para `0..*`). |
 | **`Vantagem`** | Classe | RF04, RN05 | Contém `id`, `titulo`, `descricao`, `fotoProduto`, `custoMoedas` e status `ativa`. Pertence exclusivamente a uma `EmpresaParceira` via composição. |
-| **`Transacao`** | Classe | RF07, RF08, RF09, RN03 | Registro de auditoria contendo `dataHora`, `valorMoedas`, `motivo` textual e `TipoTransacao` (`CREDITO_SEMESTRAL`, `ENVIO_RECONHECIMENTO`, `RESGATE_VANTAGEM`). |
+| **`Transacao`** | Classe | RF07, RF08, RF09, RN03 | Registro de auditoria contendo `dataHora`, `valorMoedas`, `motivo` textual e `TipoTransacao` (`CREDITO_SEMESTRAL`, `ENVIO_MOEDAS`, `RESGATE_VANTAGEM`). |
 | **`CupomResgate`** | Classe Associativa | RF10, RF11, RN07 | Modela o relacionamento N:N entre `Aluno` (`1`) e `Vantagem` (`1`). Armazena `codigoConferencia` único gerado, `dataGeracao` e flag `utilizado`. |
 | **`TipoTransacao`** | Enum | RF06, RF07, RF10 | Enumeração dos tipos de movimentações financeiras no extrato. |
 | **`EmailService`** | Interface de Serviço | RF08, RF11 | Interface de notificação: `notificarRecebimentoMoedas()`, `enviarCupomAluno()` e `enviarConferenciaParceiro()`. |
@@ -344,7 +344,7 @@ A camada de persistência foi implementada no módulo `backend/` utilizando **Sp
 | `GET` | `/api/instituicoes` | `InstituicaoEnsinoController` | `200 OK` | Lista todas as instituições de ensino pré-cadastradas pelo `DataSeeder` para preenchimento do seletor no cadastro de aluno (`RN01`). |
 | `GET` | `/api/alunos` | `AlunoController` | `200 OK` | Lista todos os alunos cadastrados com seus dados acadêmicos, instituição vinculada e `saldoMoedas`. |
 | `GET` | `/api/alunos/{id}` | `AlunoController` | `200 OK` | Busca os detalhes de um aluno específico pelo `id`. Retorna `404 Not Found` caso não exista. |
-| `POST` | `/api/alunos` | `AlunoController` | `201 Created` | Cadastra um novo aluno validando campos obrigatórios (`@Valid`), instituição existente e unicidade de `cpf`, `email` e `login` (`409 Conflict` em duplicidades). |
+| `POST` | `/api/alunos` | `AlunoController` | `201 Created` | Cadastra um novo aluno validando campos obrigatórios (`@Valid`), instituição existente e unicidade de `cpf`, `email` e `login` (`400 Bad Request` em duplicidades). |
 | `PUT` | `/api/alunos/{id}` | `AlunoController` | `200 OK` | Atualiza os dados cadastrais, curso e instituição de ensino de um aluno existente. |
 | `DELETE` | `/api/alunos/{id}` | `AlunoController` | `204 No Content` | Remove o registro do aluno (em cascata nas tabelas `alunos` e `usuarios`). |
 | `GET` | `/api/empresas` | `EmpresaParceiraController` | `200 OK` | Lista todas as empresas parceiras cadastradas na plataforma. |
@@ -449,9 +449,9 @@ Esta seção consolida o **protótipo final** (Sprint 03): autenticação obriga
 | :---: | :--- |
 | `401 Unauthorized` | Sem token, token inválido ou sessão perdida; também no login com credenciais erradas (`Login ou senha inválidos.`). |
 | `403 Forbidden` | Perfil sem permissão na rota ou tentativa de alterar/excluir recurso de outro usuário. |
-| `400 Bad Request` | Validação ou regra de negócio (saldo insuficiente, motivo vazio, custo inválido). |
+| `400 Bad Request` | Validação ou regra de negócio (saldo insuficiente, motivo vazio, custo inválido, CPF/CNPJ/e-mail/login já cadastrado, aluno de outra instituição). |
 | `404 Not Found` | Recurso inexistente. |
-| `409 Conflict` | Duplicidade de `cpf`, `cnpj`, `email` ou `login`, ou exclusão bloqueada por vínculo. |
+| `409 Conflict` | Exclusão bloqueada por vínculo, ou violação de unicidade no banco que escape às validações. |
 
 ---
 
@@ -508,6 +508,8 @@ Sem essas variáveis, a tela avisa **"E-mail não enviado"** e o restante da ope
 ### 6.6 Modelos UML Atualizados (v2)
 
 - **Diagrama de Classes v2:** [diagrama-de-classes.drawio](diagrama-de-classes.drawio)
+
+> Versão atual: v3 (Release 2), na seção 7.4.
 
 ![Diagrama de Classes (v2)](img/diagrama-de-classes.png)
 
@@ -567,5 +569,126 @@ docker compose up -d
 - Upload de arquivo para a foto da vantagem (usa URL).
 - Endpoint manual de crédito semestral.
 - Marcação do cupom como utilizado pela empresa.
-- Filtro de alunos por instituição do professor.
+- Filtro de alunos por instituição do professor (implementado na Release 2, seção 7.1).
 - Testes automatizados novos.
+
+---
+
+## 7. Release 2 — Sprint 01 (`Lab04S01`)
+
+A Lab04S01 pede os Diagramas de Sequência do projeto, o Diagrama de Visão Geral de Interação (padrões UML) e a implementação dos casos de uso restantes.
+
+---
+
+### 7.1 Casos de Uso Restantes
+
+- Os 11 casos de uso do diagrama da seção 4.1 já estavam implementados na Release 1 (seção 6.1); não havia caso de uso pendente.
+- Regra acrescentada nesta sprint: o professor só envia moedas para alunos da sua instituição de ensino. O enunciado diz que as moedas são "distribuídas aos seus alunos" e que o professor "faz parte de uma instituição"; na Release 1 essa regra estava fora do escopo (seção 6.9).
+
+| Onde | O que mudou |
+| :--- | :--- |
+| `Professor.possuiMesmaInstituicao(aluno)` e `Professor.enviarMoedas` | O envio a aluno de outra instituição é recusado com `400` "O aluno não pertence à instituição do professor." |
+| `AlunoRepository.findByInstituicaoEnsinoIdOrderByNomeAsc` | Consulta dos alunos de uma instituição, por nome. |
+| `ContaMoedaService.listarAlunosDaInstituicao` e `ProfessorMoedaController` | Rota nova `GET /api/moedas/alunos`. |
+| `ProfessorView` e `api.js` (`listarAlunosDaInstituicao()`) | A tela do professor lista só os alunos da instituição dele. |
+
+Rota nova:
+
+| Método HTTP | Rota | Perfil | Descrição |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/moedas/alunos` | `PROFESSOR` | Lista os alunos da instituição do professor, por nome (`403` para outros perfis). |
+
+---
+
+### 7.2 Diagramas de Sequência
+
+- Um diagrama por caso de uso do diagrama de casos de uso, com moldura `sd` e o mesmo nome.
+- Linhas de vida e mensagens com os nomes do código (telas React, `api.js`, controllers, services, entidades e repositórios).
+- `ref Validar Sessão` nas rotas autenticadas.
+- `break` para os caminhos de erro, com o status HTTP e a mensagem do código.
+- Notas `«include»` para os casos incluídos.
+- Fontes editáveis em `diagramas-de-sequencia/`.
+
+| Nº | Caso de uso | Requisitos | Diagrama | Imagem |
+| :--- | :--- | :--- | :--- | :--- |
+| 00 | Validar Sessão (interação reutilizada por `ref`) | RF01, RN08 | [drawio](diagramas-de-sequencia/00-validar-sessao.drawio) | [PNG](img/sequencia-00-validar-sessao.png) |
+| 01 | Realizar Login | RF01 | [drawio](diagramas-de-sequencia/01-realizar-login.drawio) | [PNG](img/sequencia-01-realizar-login.png) |
+| 02 | Realizar Cadastro de Aluno (inclui Selecionar Instituição de Ensino) | RF02, RF05 | [drawio](diagramas-de-sequencia/02-realizar-cadastro-de-aluno.drawio) | [PNG](img/sequencia-02-realizar-cadastro-de-aluno.png) |
+| 03 | Realizar Cadastro de Empresa Parceira | RF03 | [drawio](diagramas-de-sequencia/03-realizar-cadastro-de-empresa-parceira.drawio) | [PNG](img/sequencia-03-realizar-cadastro-de-empresa-parceira.png) |
+| 04 | Cadastrar Vantagem | RF04 | [drawio](diagramas-de-sequencia/04-cadastrar-vantagem.drawio) | [PNG](img/sequencia-04-cadastrar-vantagem.png) |
+| 05 | Receber 1.000 Moedas Semestrais | RF06 | [drawio](diagramas-de-sequencia/05-receber-moedas-semestrais.drawio) | [PNG](img/sequencia-05-receber-moedas-semestrais.png) |
+| 06 | Enviar Moedas a Aluno (inclui Notificar Recebimento de Moedas por E-mail) | RF07, RF08 | [drawio](diagramas-de-sequencia/06-enviar-moedas-a-aluno.drawio) | [PNG](img/sequencia-06-enviar-moedas-a-aluno.png) |
+| 07 | Consultar Extrato de Conta | RF09 | [drawio](diagramas-de-sequencia/07-consultar-extrato-de-conta.drawio) | [PNG](img/sequencia-07-consultar-extrato-de-conta.png) |
+| 08 | Resgatar Vantagem (inclui Enviar Cupom com Código de Conferência por E-mail) | RF10, RF11 | [drawio](diagramas-de-sequencia/08-resgatar-vantagem.drawio) | [PNG](img/sequencia-08-resgatar-vantagem.png) |
+
+#### 7.2.0 Validar Sessão
+
+![Validar Sessão](img/sequencia-00-validar-sessao.png)
+
+#### 7.2.1 Realizar Login
+
+![Realizar Login](img/sequencia-01-realizar-login.png)
+
+#### 7.2.2 Realizar Cadastro de Aluno
+
+![Realizar Cadastro de Aluno](img/sequencia-02-realizar-cadastro-de-aluno.png)
+
+#### 7.2.3 Realizar Cadastro de Empresa Parceira
+
+![Realizar Cadastro de Empresa Parceira](img/sequencia-03-realizar-cadastro-de-empresa-parceira.png)
+
+#### 7.2.4 Cadastrar Vantagem
+
+![Cadastrar Vantagem](img/sequencia-04-cadastrar-vantagem.png)
+
+#### 7.2.5 Receber 1.000 Moedas Semestrais
+
+![Receber 1.000 Moedas Semestrais](img/sequencia-05-receber-moedas-semestrais.png)
+
+#### 7.2.6 Enviar Moedas a Aluno
+
+![Enviar Moedas a Aluno](img/sequencia-06-enviar-moedas-a-aluno.png)
+
+A regra da instituição aparece em `possuiMesmaInstituicao(aluno)`.
+
+#### 7.2.7 Consultar Extrato de Conta
+
+![Consultar Extrato de Conta](img/sequencia-07-consultar-extrato-de-conta.png)
+
+#### 7.2.8 Resgatar Vantagem
+
+![Resgatar Vantagem](img/sequencia-08-resgatar-vantagem.png)
+
+---
+
+### 7.3 Diagrama de Visão Geral de Interação
+
+- **Arquivo editável Draw.io:** [diagrama-visao-geral-interacao.drawio](diagrama-visao-geral-interacao.drawio)
+
+![Diagrama de Visão Geral de Interação](img/visao-geral-interacao.png)
+
+- Cada nó `ref` aponta para um diagrama de sequência da seção 7.2.
+- Fluxo de uso: cadastro (aluno ou empresa; professores são pré-cadastrados) → login → ações por perfil.
+- Fluxo agendado: crédito semestral em 1º/jan e 1º/jul.
+
+---
+
+### 7.4 Modelos Atualizados
+
+- **Diagrama de Classes v3:** [diagrama-de-classes.drawio](diagrama-de-classes.drawio)
+
+![Diagrama de Classes (v3)](img/diagrama-de-classes.png)
+
+- O que mudou: `possuiMesmaInstituicao(aluno: Aluno): boolean` em `Professor`.
+- Versão anterior (v2, Sprint 03): [diagrama-de-classes-v2.drawio](diagrama-de-classes-v2.drawio) ([PNG](img/diagrama-de-classes-v2.png)).
+- Diagrama de casos de uso, diagrama de componentes e modelo ER: sem mudança (nenhum caso de uso, componente ou tabela novos).
+
+---
+
+### 7.5 Correções de Alinhamento
+
+Correções feitas neste README para bater com o código:
+- tipo da transação de envio com o nome do código (`ENVIO_MOEDAS`) na US06 e na matriz da seção 4.2;
+- repositórios reais na seção 2;
+- duplicidade de cadastro devolve `400`, não `409`;
+- critérios da US03 (senha sem hash), US06 (aluno da mesma instituição) e US07 (aviso do e-mail na tela) ajustados ao comportamento real.
