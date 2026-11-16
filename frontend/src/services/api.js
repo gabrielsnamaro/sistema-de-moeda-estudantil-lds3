@@ -70,10 +70,6 @@ export function listarInstituicoes() {
   return request('/instituicoes');
 }
 
-export function listarAlunos() {
-  return request('/alunos');
-}
-
 export function buscarAlunoPorId(id) {
   return request(`/alunos/${id}`);
 }
@@ -124,6 +120,10 @@ export function excluirEmpresa(id) {
   return request(`/empresas/${id}`, {
     method: 'DELETE',
   });
+}
+
+export function listarAlunosDaInstituicao() {
+  return request('/moedas/alunos');
 }
 
 export function consultarExtrato() {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { listarAlunos, enviarMoedas } from '../services/api';
+import { listarAlunosDaInstituicao, enviarMoedas } from '../services/api';
 import { notificarRecebimentoMoedas } from '../services/emailjs';
 import Extrato from '../components/Extrato';
 
@@ -23,7 +23,7 @@ export default function ProfessorView({ sessao }) {
     async function carregarAlunos() {
       setCarregando(true);
       try {
-        const lista = await listarAlunos();
+        const lista = await listarAlunosDaInstituicao();
         setAlunos(Array.isArray(lista) ? lista : []);
       } catch (error) {
         setMensagemErro(error.message || 'Não foi possível carregar os alunos.');
@@ -96,11 +96,12 @@ export default function ProfessorView({ sessao }) {
           </h2>
 
           <p>A cada semestre você recebe 1.000 moedas (acumuláveis).</p>
+          <p>Só aparecem os alunos da sua instituição de ensino.</p>
 
           {carregando ? (
             <p className="empty-state">Carregando alunos...</p>
           ) : alunos.length === 0 ? (
-            <p className="empty-state">Nenhum aluno cadastrado.</p>
+            <p className="empty-state">Nenhum aluno da sua instituição cadastrado.</p>
           ) : (
             <form onSubmit={handleSubmit} className="form-grid">
               <div className="form-group">
