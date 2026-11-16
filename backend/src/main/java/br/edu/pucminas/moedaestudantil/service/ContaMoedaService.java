@@ -1,5 +1,6 @@
 package br.edu.pucminas.moedaestudantil.service;
 
+import br.edu.pucminas.moedaestudantil.dto.AlunoResponseDTO;
 import br.edu.pucminas.moedaestudantil.dto.EnvioMoedasRequestDTO;
 import br.edu.pucminas.moedaestudantil.dto.ExtratoResponseDTO;
 import br.edu.pucminas.moedaestudantil.dto.TransacaoResponseDTO;
@@ -57,6 +58,17 @@ public class ContaMoedaService {
         alunoRepository.save(aluno);
         Transacao salva = transacaoRepository.save(transacao);
         return TransacaoResponseDTO.fromEntity(salva);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlunoResponseDTO> listarAlunosDaInstituicao(UsuarioAutenticado usuario) {
+        usuario.exigirPerfil(TipoPerfil.PROFESSOR);
+        Professor professor = professorRepository.findById(usuario.id())
+                .orElseThrow(() -> new EntityNotFoundException("Professor não encontrado com ID: " + usuario.id()));
+        return alunoRepository.findByInstituicaoEnsinoIdOrderByNomeAsc(professor.getInstituicaoEnsino().getId())
+                .stream()
+                .map(AlunoResponseDTO::fromEntity)
+                .toList();
     }
 
     @Transactional(readOnly = true)

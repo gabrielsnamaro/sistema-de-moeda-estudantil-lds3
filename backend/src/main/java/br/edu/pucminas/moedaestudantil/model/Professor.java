@@ -56,9 +56,20 @@ public class Professor extends Usuario {
         return valor != null && valor > 0 && this.saldoMoedas != null && this.saldoMoedas >= valor;
     }
 
+    public boolean possuiMesmaInstituicao(Aluno aluno) {
+        if (aluno == null || this.instituicaoEnsino == null || aluno.getInstituicaoEnsino() == null) {
+            return false;
+        }
+        Long idDoProfessor = this.instituicaoEnsino.getId();
+        return idDoProfessor != null && idDoProfessor.equals(aluno.getInstituicaoEnsino().getId());
+    }
+
     public Transacao enviarMoedas(Aluno aluno, Integer valor, String motivo) {
         if (aluno == null) {
             throw new IllegalArgumentException("O aluno destinatário é obrigatório.");
+        }
+        if (!possuiMesmaInstituicao(aluno)) {
+            throw new IllegalArgumentException("O aluno não pertence à instituição do professor.");
         }
         if (motivo == null || motivo.isBlank()) {
             throw new IllegalArgumentException("O motivo do reconhecimento é obrigatório.");

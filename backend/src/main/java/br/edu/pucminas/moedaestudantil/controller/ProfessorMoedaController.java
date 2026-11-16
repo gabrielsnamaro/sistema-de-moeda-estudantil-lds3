@@ -1,6 +1,7 @@
 package br.edu.pucminas.moedaestudantil.controller;
 
 import br.edu.pucminas.moedaestudantil.config.AuthInterceptor;
+import br.edu.pucminas.moedaestudantil.dto.AlunoResponseDTO;
 import br.edu.pucminas.moedaestudantil.dto.EnvioMoedasRequestDTO;
 import br.edu.pucminas.moedaestudantil.dto.ExtratoResponseDTO;
 import br.edu.pucminas.moedaestudantil.dto.TransacaoResponseDTO;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/moedas")
 public class ProfessorMoedaController {
@@ -30,6 +33,12 @@ public class ProfessorMoedaController {
     public ResponseEntity<ExtratoResponseDTO> consultarExtrato(
             @RequestAttribute(AuthInterceptor.ATRIBUTO_USUARIO) UsuarioAutenticado usuario) {
         return ResponseEntity.ok(contaMoedaService.consultarExtrato(usuario));
+    }
+
+    @GetMapping("/alunos")
+    public ResponseEntity<List<AlunoResponseDTO>> listarAlunosDaInstituicao(
+            @RequestAttribute(AuthInterceptor.ATRIBUTO_USUARIO) UsuarioAutenticado usuario) {
+        return ResponseEntity.ok(contaMoedaService.listarAlunosDaInstituicao(usuario));
     }
 
     @PostMapping("/envios")
