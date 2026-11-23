@@ -1,0 +1,93 @@
+package com.management.service;
+
+import com.management.dto.AlunoRequestDTO;
+import com.management.exception.RecursoNaoEncontradoException;
+import com.management.exception.RegraNegocioException;
+import com.management.model.Aluno;
+import com.management.model.Instituicao;
+import com.management.repository.AlunoRepository;
+import com.management.repository.ResgateVantagemRepository;
+import com.management.repository.TransacaoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class AlunoService {
+
+    private final AlunoRepository alunoRepository;
+    private final ValidadorCredenciaisUsuario validadorCredenciais;
+    private final InstituicaoService instituicaoService;
+    private final TransacaoRepository transacaoRepository;
+    private final ResgateVantagemRepository resgateRepository;
+
+    public AlunoService(AlunoRepository alunoRepository,
+                        ValidadorCredenciaisUsuario validadorCredenciais,
+                        InstituicaoService instituicaoService,
+                        TransacaoRepository transacaoRepository,
+                        ResgateVantagemRepository resgateRepository) {
+        this.alunoRepository = alunoRepository;
+        this.validadorCredenciais = validadorCredenciais;
+        this.instituicaoService = instituicaoService;
+        this.transacaoRepository = transacaoRepository;
+        this.resgateRepository = resgateRepository;
+    }
+
+    public Aluno buscarPorId(Long id) {
+        return alunoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno não encontrado com ID: " + id));
+    }
+
+    /** Alunos de uma instituição (usado pelo professor para escolher quem recebe moedas). */
+    public List<Aluno> listarPorInstituicao(Long instituicaoId) {
+        return alunoRepository.findByInstituicaoIdOrderByNomeAsc(instituicaoId);
+    }
+
+    @Transactional
+    public Aluno criar(AlunoRequestDTO dto) {
+        validadorCredenciais.validarSenhaObrigatoria(dto.getSenha());
+        String login = dto.getLogin().trim();
+        String email = dto.getEmail().trim().toLowerCase();
+        String cpf = Documentos.formatarCpf(dto.getCpf());
+
+        validadorCredenciais.validarUnicidadeCadastro(login, email);
+        validadorCredenciais.validarCpfCadastro(cpf);
+
+        Instituicao instituicao = instituicaoService.buscarPorId(dto.getInstituicaoId());
+
+        Aluno aluno = new Aluno(dto.getNome().trim(), dto.getSenha(), login, email, cpf, instituicao,
+                dto.getRg().trim(), dto.getEndereco().trim(), dto.getCurso(), dto.getMatricula());
+        instituicao.vincularAluno(aluno);
+        return alunoRepository.save(aluno);
+    }
+
+    @Transactional
+    public Aluno atualizar(Long id, AlunoRequestDTO dto) {
+        Aluno existente = buscarPorId(id);
+        String login = dto.getLogin().trim();
+        String email = dto.getEmail().trim().toLowerCase();
+        String cpf = Documentos.formatarCpf(dto.getCpf());
+
+        validadorCredenciais.validarUnicidadeAtualizacao(existente, login, email);
+        validadorCredenciais.validarCpfAtualizacao(existente.getCpf(), cpf);
+
+        Instituicao instituicao = instituicaoService.buscarPorId(dto.getInstituicaoId());
+        existente.atualizarCadastro(
+                dto.getNome().trim(), login, email, dto.getSenha(),
+                cpf, dto.getRg().trim(), dto.getEndereco().trim(),
+                instituicao, dto.getCurso(), dto.getMatricula());
+
+        return alunoRepository.save(existente);
+    }
+
+    @Transactional
+    public void excluir(Long id) {
+        Aluno existente = buscarPorId(id);
+        if (transacaoRepository.existsByAlunoId(id) || resgateRepository.existsByAlunoId(id)) {
+            throw new RegraNegocioException("Não é possível excluir a conta: já existem moedas recebidas ou "
+                    + "vantagens resgatadas registradas para este aluno (histórico preservado para auditoria).");
+        }
+        alunoRepository.delete(existente);
+    }
+}

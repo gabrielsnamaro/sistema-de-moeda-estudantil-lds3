@@ -609,3 +609,17 @@ O mascote **Capelo** — modelado como um capelo de formatura dourado com pingen
 - **Componente de renderização e estado global:** `frontend/src/components/BotAvatar.jsx`, `frontend/src/contexts/MascotContext.jsx` e `frontend/src/components/MascotDock.jsx`
 - **Reatividade em tempo real:** reage ao foco nos campos, envio de moedas, resgate de vantagens (celebração no modal de cupom), erros de validação e estados vazios, além de exibir dicas contextuais clicáveis no canto inferior direito.
 
+---
+
+## 8. Laboratório 4 — Sprint 3 (Lab04S03): Análise Técnica e Refatorações GRASP
+
+- **Relatório completo (PDF):** [Relatorio_Lab04S03_Analise_TOKEN.pdf](avaliacao-lab04s03/Relatorio_Lab04S03_Analise_TOKEN.pdf)
+- **Relatório em Markdown:** [Relatorio_Lab04S03_Analise_TOKEN.md](avaliacao-lab04s03/Relatorio_Lab04S03_Analise_TOKEN.md)
+- **Código refatorado pronto para Pull Request (13 arquivos Java):** [`avaliacao-lab04s03/refatoracoes-pr/`](avaliacao-lab04s03/refatoracoes-pr/)
+
+A entrega documenta a análise técnica construtiva do projeto **TOKEN** (arquitetura/tecnologias, organização do repositório, configuração via `README.md`, diagramas UML/ER e alinhamento modelo–código) e propõe três refatorações fundamentadas nos padrões **GRASP**, validadas com `mvn test` (13/13 testes aprovados):
+1. **Polymorphism / Protected Variations / Low Coupling:** extração de `GeradorExtratoStrategy` (`ExtratoProfessorStrategy` e `ExtratoAlunoStrategy`) a partir de `TransacaoMoedaService`.
+2. **Pure Fabrication / High Cohesion / Low Coupling:** extração de `GeradorCodigoCupom` e consulta direta `findByCodigoCupomAndVantagemEmpresaId` em `ResgateVantagemRepository` / `VantagemResgateService`.
+3. **Information Expert / Pure Fabrication / Low Coupling:** centralização das validações em `ValidadorCredenciaisUsuario` e delegação de atualização de estado para `Usuario`, `Aluno` e `Empresa` (`AlunoService` e `EmpresaService`).
+
+
