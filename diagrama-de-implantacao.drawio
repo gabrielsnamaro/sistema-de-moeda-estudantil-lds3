@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net" modified="2026-11-23T21:20:00.000Z" agent="Antigravity" version="24.7.17" type="device">
+  <diagram id="deployment-moeda-estudantil" name="Diagrama de Implantação">
+    <mxGraphModel dx="1420" dy="860" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title Banner -->
+        <mxCell id="title" value="Diagrama de Implantação — Sistema de Moeda Estudantil (Lab04S02)" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=18;fontStyle=1;fontColor=#0d5f94;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="900" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Arquitetura em produção: Vercel (SPA React + Vite) · Render Docker (Spring Boot 3 / JRE 21) · Render PostgreSQL · EmailJS API" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Helvetica;fontSize=11;fontColor=#4b5563;" vertex="1" parent="1">
+          <mxGeometry x="30" y="46" width="980" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 1: Client Device -->
+        <mxCell id="node_client" value="«device»&#10;Dispositivo do Usuário&#10;(Navegador Web — Desktop / Mobile)" style="shape=cube;whiteSpace=wrap;html=0;boundedLbl=1;backgroundOutline=1;darkOpacity=0.06;darkOpacity2=0.12;size=14;fillColor=#eef6fc;strokeColor=#0d5f94;strokeWidth=1.8;verticalAlign=top;align=center;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0d5f94;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="380" height="295" as="geometry" />
+        </mxCell>
+        <mxCell id="art_spa" value="«artifact»&#10;SPA React 18 + Vite&#10;────────────────────────────&#10;• AuthView, AlunoView, ProfessorView&#10;• EmpresaParceiraView, Extrato&#10;• Framer Motion + Tema Claro/Escuro&#10;• Mascote Capelo (open-bot-avatar)" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#1e88c7;strokeWidth=1.4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_client">
+          <mxGeometry x="32" y="76" width="326" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="art_client_services" value="«artifact»&#10;Clientes HTTP &amp; Sessão&#10;────────────────────────────&#10;• api.js (REST fetch + Bearer em sessionStorage)&#10;• emailjs.js (disparo de e-mail transacional)" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#1e88c7;strokeWidth=1.4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_client">
+          <mxGeometry x="32" y="204" width="326" height="78" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 2: Vercel CDN -->
+        <mxCell id="node_vercel" value="«executionEnvironment»&#10;Vercel Edge Network (CDN / Hosting)&#10;https://moeda-estudantil-lds3.vercel.app" style="shape=cube;whiteSpace=wrap;html=0;boundedLbl=1;backgroundOutline=1;darkOpacity=0.06;darkOpacity2=0.12;size=14;fillColor=#eef6fc;strokeColor=#0d5f94;strokeWidth=1.8;verticalAlign=top;align=center;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#0d5f94;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="520" y="90" width="350" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="art_bundle" value="«artifact»&#10;frontend/dist (Bundle Estático)&#10;────────────────────────────&#10;• index.html + assets/*.js + assets/*.css&#10;• Build via Vite 5 (npm run build)&#10;• Env: VITE_API_BASE_URL, VITE_EMAILJS_*" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#1e88c7;strokeWidth=1.4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_vercel">
+          <mxGeometry x="30" y="82" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 3: EmailJS Cloud -->
+        <mxCell id="node_emailjs" value="«externalSystem»&#10;EmailJS Cloud API&#10;api.emailjs.com" style="shape=cube;whiteSpace=wrap;html=0;boundedLbl=1;backgroundOutline=1;darkOpacity=0.06;darkOpacity2=0.12;size=14;fillColor=#fffbeb;strokeColor=#b45309;strokeWidth=1.6;verticalAlign=top;align=center;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#92400e;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="940" y="90" width="300" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="art_emailjs" value="«service»&#10;Envio de E-mail Transacional&#10;────────────────────────────&#10;• POST /api/v1.0/email/send&#10;• Aviso de moedas ao aluno&#10;• Cupom de resgate ao aluno&#10;• Conferência de código ao parceiro" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1.3;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_emailjs">
+          <mxGeometry x="28" y="82" width="254" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 4: Render Web Service -->
+        <mxCell id="node_render_api" value="«executionEnvironment»&#10;Render Web Service (Container Docker · JRE 21)&#10;https://sistema-de-moeda-estudantil-lds3.onrender.com/api" style="shape=cube;whiteSpace=wrap;html=0;boundedLbl=1;backgroundOutline=1;darkOpacity=0.06;darkOpacity2=0.12;size=14;fillColor=#eef6fc;strokeColor=#0d5f94;strokeWidth=1.8;verticalAlign=top;align=center;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#0d5f94;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="455" width="490" height="245" as="geometry" />
+        </mxCell>
+        <mxCell id="art_jar" value="«artifact»&#10;moeda-estudantil-backend.jar (Spring Boot 3.3 / Java 21)&#10;────────────────────────────────────────────&#10;• Controllers REST: Auth, Aluno, Empresa, Instituicao, Moeda, Vantagem&#10;• Services: Autenticacao, Aluno, Empresa, Moeda, Vantagem + DataSeeder&#10;• Segurança: AuthInterceptor (Bearer Token) + CorsConfig&#10;• Persistência: Spring Data JPA / Hibernate (8 Repositories)&#10;• Env: PORT, SPRING_DATASOURCE_*, CORS_ALLOWED_ORIGINS" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#1e88c7;strokeWidth=1.4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_render_api">
+          <mxGeometry x="30" y="82" width="440" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 5: Render PostgreSQL -->
+        <mxCell id="node_render_db" value="«executionEnvironment»&#10;Render Managed PostgreSQL&#10;(Rede Privada Render · TCP 5432)" style="shape=cube;whiteSpace=wrap;html=0;boundedLbl=1;backgroundOutline=1;darkOpacity=0.06;darkOpacity2=0.12;size=14;fillColor=#ecfdf5;strokeColor=#047857;strokeWidth=1.8;verticalAlign=top;align=center;fontFamily=Helvetica;fontSize=11.5;fontStyle=1;fontColor=#065f46;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="660" y="455" width="360" height="245" as="geometry" />
+        </mxCell>
+        <mxCell id="art_db" value="«database»&#10;PostgreSQL 16&#10;──────────────────────────────&#10;• instituicoes_ensino, usuarios&#10;• alunos, professores, empresas_parceiras&#10;• transacoes_moeda&#10;• vantagens, cupons_resgate&#10;• Schema gerenciado por Hibernate (ddl-auto=update)" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#059669;strokeWidth=1.4;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=Helvetica;fontSize=10.5;fontColor=#1f2937;" vertex="1" parent="node_render_db">
+          <mxGeometry x="30" y="82" width="310" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- NODE 6: GitHub CI/CD -->
+        <mxCell id="node_github" value="«artifact» GitHub Repository&#10;gabrielsnamaro/sistema-de-moeda-estudantil-lds3&#10;Deploy contínuo (push em main → Vercel &amp; Render)" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#f8fafc;strokeColor=#64748b;strokeWidth=1.4;dashed=1;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=10.5;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="515" width="195" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- EDGES / COMMUNICATION PATHS -->
+        <mxCell id="edge_browser_vercel" value="«HTTPS / TLS»&#10;GET HTML/JS/CSS" style="endArrow=classic;startArrow=classic;html=0;strokeColor=#0d5f94;strokeWidth=1.6;fontFamily=Helvetica;fontSize=10;fontColor=#0d5f94;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="node_client" target="node_vercel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_browser_api" value="«HTTPS / REST JSON»&#10;Authorization: Bearer" style="endArrow=classic;startArrow=classic;html=0;strokeColor=#0d5f94;strokeWidth=1.8;fontFamily=Helvetica;fontSize=10;fontColor=#0d5f94;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="node_client" target="node_render_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_api_db" value="«JDBC / TCP 5432»&#10;SQL (rede interna)" style="endArrow=classic;startArrow=classic;html=0;strokeColor=#047857;strokeWidth=1.8;fontFamily=Helvetica;fontSize=10;fontColor=#065f46;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="node_render_api" target="node_render_db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_browser_emailjs" value="«HTTPS / REST POST»&#10;Notificações e Cupons" style="endArrow=classic;html=0;strokeColor=#b45309;strokeWidth=1.5;dashed=1;fontFamily=Helvetica;fontSize=10;fontColor=#92400e;labelBackgroundColor=#ffffff;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="node_client" target="node_emailjs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="465" y="345" />
+              <mxPoint x="905" y="345" />
+              <mxPoint x="905" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_github_vercel" value="«deploy»" style="endArrow=open;html=0;strokeColor=#64748b;strokeWidth=1.2;dashed=1;fontFamily=Helvetica;fontSize=9.5;fontColor=#475569;labelBackgroundColor=#ffffff;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="node_github" target="node_vercel">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1152" y="385" />
+              <mxPoint x="695" y="385" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="edge_github_render" value="«deploy»" style="endArrow=open;html=0;strokeColor=#64748b;strokeWidth=1.2;dashed=1;fontFamily=Helvetica;fontSize=9.5;fontColor=#475569;labelBackgroundColor=#ffffff;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="node_github" target="node_render_api">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1152" y="730" />
+              <mxPoint x="275" y="730" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

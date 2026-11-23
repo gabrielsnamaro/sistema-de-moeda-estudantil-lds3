@@ -569,3 +569,43 @@ docker compose up -d
 - Marcação do cupom como utilizado pela empresa.
 - Filtro de alunos por instituição do professor.
 - Testes automatizados novos.
+
+---
+
+## 7. Laboratório 4 — Sprint 2 (Lab04S02): Implantação, Interface Visual e Mascote
+
+### 7.1 Diagrama de Implantação (UML 2.5)
+
+- **Fonte editável (Draw.io):** [diagrama-de-implantacao.drawio](diagrama-de-implantacao.drawio)
+
+![Diagrama de Implantação](img/diagrama-de-implantacao.png)
+
+A implantação em produção distribui os nós da arquitetura da seguinte forma:
+- **Dispositivo do Usuário (`«device»`):** executa o SPA React + Vite no navegador web, mantendo o token de sessão em `sessionStorage` e comunicando-se via HTTPS com a API REST e com o serviço EmailJS.
+- **Vercel Edge Network (`«executionEnvironment»`):** hospeda o bundle estático `frontend/dist` em `https://moeda-estudantil-lds3.vercel.app`, com deploy automático via GitHub e configuração por variáveis `VITE_API_BASE_URL` e `VITE_EMAILJS_*`.
+- **Render Web Service (`«executionEnvironment»`):** executa o contêiner Docker (`backend/Dockerfile`, JRE 21) com `moeda-estudantil-backend.jar` (Spring Boot 3.3) em `https://sistema-de-moeda-estudantil-lds3.onrender.com/api`, protegido por `CorsConfig` e `AuthInterceptor`.
+- **Render Managed PostgreSQL (`«executionEnvironment»`):** banco relacional PostgreSQL 16 acessado exclusivamente pela rede interna do Render via `JDBC / TCP 5432`.
+- **EmailJS Cloud API (`«externalSystem»`):** serviço externo de envio de e-mails transacionais para notificações de moedas recebidas, envio do cupom ao aluno e conferência do código pela empresa parceira.
+
+---
+
+### 7.2 Evolução da Interface Visual (`frontend/`)
+
+A interface em **React 18 + Vite** foi redesenhada para oferecer experiência moderna, responsiva e acessível em todos os perfis:
+- **Design system com tema claro e escuro** persistido em `localStorage`, tipografia dedicada (`Space Grotesk`, `Plus Jakarta Sans` e `JetBrains Mono`) e barra superior fixa com efeito translúcido.
+- **Animações fluidas com `framer-motion`** (`MotionConfig reducedMotion="user"`), transições suaves entre abas e modos de autenticação, contadores animados (`AnimatedNumber`), modais de confirmação e celebração de cupom (`ConfirmModal`, `CupomModal`), `Skeletons` de carregamento e notificações `Toast`.
+- **Experiência aprimorada por perfil:**
+  - **Login (`AuthView`):** layout dividido com apresentação da plataforma e atalhos de preenchimento rápido para os professores pré-cadastrados (`milena.adao` e `carlos.almeida`).
+  - **Aluno (`AlunoView`):** faixa de indicadores (saldo, vantagens disponíveis e cupons resgatados), busca em tempo real, filtro *"Posso resgatar"*, cupons estilizados em formato de ticket com cópia do código em 1 clique e extrato com filtros.
+  - **Professor (`ProfessorView`):** botões rápidos de quantidade (`+10`, `+25`, `+50`, `+100`, `+250`), prévia do saldo restante após o envio e extrato detalhado.
+  - **Empresa Parceira (`EmpresaParceiraView`):** pré-visualização ao vivo (WYSIWYG) do card de vantagem durante o cadastro/edição, gestão de vantagens com modal de confirmação e edição de perfil.
+
+---
+
+### 7.3 Mascote Oficial: Capelo (`open-bot-avatar`)
+
+O mascote **Capelo** — modelado como um capelo de formatura dourado com pingente lateral — foi criado com a biblioteca [`open-bot-avatar`](https://dominikscholz.github.io/open-bot-avatar/) (Canvas 2D, com alternância entre textura *Fluffy* e *Flat*) e acompanha o usuário em toda a jornada:
+- **Definição geométrica e falas contextuais:** `frontend/src/mascot/capeloAvatar.js`
+- **Componente de renderização e estado global:** `frontend/src/components/BotAvatar.jsx`, `frontend/src/contexts/MascotContext.jsx` e `frontend/src/components/MascotDock.jsx`
+- **Reatividade em tempo real:** reage ao foco nos campos, envio de moedas, resgate de vantagens (celebração no modal de cupom), erros de validação e estados vazios, além de exibir dicas contextuais clicáveis no canto inferior direito.
+

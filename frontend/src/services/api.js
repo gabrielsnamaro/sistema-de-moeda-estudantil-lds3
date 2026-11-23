@@ -23,15 +23,21 @@ async function request(path, options = {}) {
   const sessao = obterSessao();
   const token = sessao?.token;
 
-  // headers montados depois de ...options para que as opções não os sobrescrevam
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+  } catch {
+    throw new Error(
+      'Não foi possível conectar ao servidor. Se o backend estiver iniciando, aguarde alguns segundos e tente novamente.'
+    );
+  }
 
   if (response.status === 204) {
     return null;
@@ -49,7 +55,9 @@ async function request(path, options = {}) {
       limparSessao();
       window.dispatchEvent(new Event('sessao-expirada'));
     }
-    throw new Error(data?.erro || 'Erro ao comunicar com o servidor.');
+    const err = new Error(data?.erro || 'Erro ao comunicar com o servidor.');
+    err.status = response.status;
+    throw err;
   }
 
   return data;
@@ -72,6 +80,17 @@ export function listarInstituicoes() {
 
 export function listarAlunos() {
   return request('/alunos');
+}
+
+export async function listarAlunosDaInstituicao() {
+  try {
+    return await request('/moedas/alunos');
+  } catch (err) {
+    if (err?.status === 404 || err?.status === 405) {
+      return request('/alunos');
+    }
+    throw err;
+  }
 }
 
 export function buscarAlunoPorId(id) {
