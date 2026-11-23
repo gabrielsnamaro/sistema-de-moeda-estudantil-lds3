@@ -4,6 +4,7 @@
 **Docente:** Profa. Milena Menezes Adão  
 **Escopo do repositório:** Sprints 01, 02 e 03 (protótipo final)  
 
+
 ### Integrantes da Equipe
 - **Fabrício Rocha Lopes**
 - **Gabriel Silva Neiva Amaro**
