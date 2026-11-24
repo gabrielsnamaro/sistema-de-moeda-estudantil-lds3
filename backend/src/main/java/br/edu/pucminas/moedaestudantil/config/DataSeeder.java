@@ -1,9 +1,13 @@
 package br.edu.pucminas.moedaestudantil.config;
 
+import br.edu.pucminas.moedaestudantil.model.Aluno;
+import br.edu.pucminas.moedaestudantil.model.EmpresaParceira;
 import br.edu.pucminas.moedaestudantil.model.InstituicaoEnsino;
 import br.edu.pucminas.moedaestudantil.model.Professor;
 import br.edu.pucminas.moedaestudantil.model.Transacao;
 import br.edu.pucminas.moedaestudantil.model.enums.TipoTransacao;
+import br.edu.pucminas.moedaestudantil.repository.AlunoRepository;
+import br.edu.pucminas.moedaestudantil.repository.EmpresaParceiraRepository;
 import br.edu.pucminas.moedaestudantil.repository.InstituicaoEnsinoRepository;
 import br.edu.pucminas.moedaestudantil.repository.ProfessorRepository;
 import br.edu.pucminas.moedaestudantil.repository.TransacaoRepository;
@@ -17,14 +21,20 @@ public class DataSeeder implements CommandLineRunner {
 
     private final InstituicaoEnsinoRepository instituicaoEnsinoRepository;
     private final ProfessorRepository professorRepository;
+    private final AlunoRepository alunoRepository;
+    private final EmpresaParceiraRepository empresaParceiraRepository;
     private final TransacaoRepository transacaoRepository;
 
     public DataSeeder(
             InstituicaoEnsinoRepository instituicaoEnsinoRepository,
             ProfessorRepository professorRepository,
+            AlunoRepository alunoRepository,
+            EmpresaParceiraRepository empresaParceiraRepository,
             TransacaoRepository transacaoRepository) {
         this.instituicaoEnsinoRepository = instituicaoEnsinoRepository;
         this.professorRepository = professorRepository;
+        this.alunoRepository = alunoRepository;
+        this.empresaParceiraRepository = empresaParceiraRepository;
         this.transacaoRepository = transacaoRepository;
     }
 
@@ -48,9 +58,7 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         if (professorRepository.count() == 0) {
-            InstituicaoEnsino pucMinas = instituicaoEnsinoRepository
-                    .findByCnpj("17.178.195/0001-67")
-                    .orElseGet(() -> instituicaoEnsinoRepository.findAll().get(0));
+            InstituicaoEnsino pucMinas = buscarPucMinas();
 
             Professor profMilena = new Professor(
                     "Profa. Milena Menezes Adão",
@@ -84,5 +92,40 @@ public class DataSeeder implements CommandLineRunner {
                         null));
             }
         }
+
+        if (alunoRepository.count() == 0) {
+            InstituicaoEnsino pucMinas = buscarPucMinas();
+
+            Aluno alunoAna = new Aluno(
+                    "Ana Clara Ferreira",
+                    "ana.ferreira@sga.pucminas.br",
+                    "ana.ferreira",
+                    "aluno123",
+                    "222.333.444-55",
+                    "MG-18.456.789",
+                    "Rua Coração Eucarístico de Jesus, 210 - Coração Eucarístico, Belo Horizonte - MG",
+                    "Engenharia de Software",
+                    pucMinas);
+
+            alunoRepository.save(alunoAna);
+        }
+
+        if (empresaParceiraRepository.count() == 0) {
+            EmpresaParceira cafeteria = new EmpresaParceira(
+                    "Cafeteria Campus Coração",
+                    "contato@cafeteriacampus.com.br",
+                    "cafeteria.campus",
+                    "empresa123",
+                    "24.680.135/0001-42",
+                    "Cafeteria e lanchonete parceira próxima ao campus Coração Eucarístico da PUC Minas em Belo Horizonte.");
+
+            empresaParceiraRepository.save(cafeteria);
+        }
+    }
+
+    private InstituicaoEnsino buscarPucMinas() {
+        return instituicaoEnsinoRepository
+                .findByCnpj("17.178.195/0001-67")
+                .orElseGet(() -> instituicaoEnsinoRepository.findAll().get(0));
     }
 }
